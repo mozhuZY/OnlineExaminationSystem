@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.dao.AnswerDao">
+  <resultMap id="BaseResultMap" type="com.zy.oes.entity.Answer">
+    <id column="ans_id" jdbcType="INTEGER" property="ans_id" />
+    <result column="exam_id" jdbcType="INTEGER" property="exam_id" />
+    <result column="examinee_id" jdbcType="INTEGER" property="examinee_id" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="score" jdbcType="VARCHAR" property="score" />
+    <result column="total_score" jdbcType="DECIMAL" property="total_score" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ans_id, exam_id, examinee_id, content, score, total_score
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from answer
+    where ans_id = #{ans_id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from answer
+    where ans_id = #{ans_id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="ans_id" keyProperty="ans_id" parameterType="com.zy.oes.entity.Answer" useGeneratedKeys="true">
+    insert into answer (exam_id, examinee_id, content, score, total_score)
+    values (#{exam_id,jdbcType=INTEGER}, #{examinee_id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{score,jdbcType=VARCHAR}, #{total_score,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" keyColumn="ans_id" keyProperty="ans_id" parameterType="com.zy.oes.entity.Answer" useGeneratedKeys="true">
+    insert into answer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="exam_id != null">
+        exam_id,
+      </if>
+      <if test="examinee_id != null">
+        examinee_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="total_score != null">
+        total_score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="exam_id != null">
+        #{exam_id,jdbcType=INTEGER},
+      </if>
+      <if test="examinee_id != null">
+        #{examinee_id,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="total_score != null">
+        #{total_score,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zy.oes.entity.Answer">
+    update answer
+    <set>
+      <if test="exam_id != null">
+        exam_id = #{exam_id,jdbcType=INTEGER},
+      </if>
+      <if test="examinee_id != null">
+        examinee_id = #{examinee_id,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="total_score != null">
+        total_score = #{total_score,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ans_id = #{ans_id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zy.oes.entity.Answer">
+    update answer
+    set exam_id = #{exam_id,jdbcType=INTEGER},
+      examinee_id = #{examinee_id,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      total_score = #{total_score,jdbcType=DECIMAL}
+    where ans_id = #{ans_id,jdbcType=INTEGER}
+  </update>
+</mapper>

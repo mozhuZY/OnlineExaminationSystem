@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.dao.ExamDao">
+  <resultMap id="BaseResultMap" type="com.zy.oes.entity.Exam">
+    <id column="exam_id" jdbcType="INTEGER" property="examId" />
+    <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+    <result column="paper_id" jdbcType="INTEGER" property="paperId" />
+    <result column="exam_name" jdbcType="VARCHAR" property="examName" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="subject" jdbcType="VARCHAR" property="subject" />
+    <result column="released_time" jdbcType="TIMESTAMP" property="releasedTime" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="publisher" jdbcType="INTEGER" property="publisher" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    exam_id, teacher_id, paper_id, exam_name, category, subject, released_time, start_time, 
+    end_time, publisher, `state`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from exam
+    where exam_id = #{examId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from exam
+    where exam_id = #{examId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="exam_id" keyProperty="examId" parameterType="com.zy.oes.entity.Exam" useGeneratedKeys="true">
+    insert into exam (teacher_id, paper_id, exam_name, 
+      category, subject, released_time, 
+      start_time, end_time, publisher, 
+      `state`)
+    values (#{teacherId,jdbcType=INTEGER}, #{paperId,jdbcType=INTEGER}, #{examName,jdbcType=VARCHAR}, 
+      #{category,jdbcType=INTEGER}, #{subject,jdbcType=VARCHAR}, #{releasedTime,jdbcType=TIMESTAMP}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{publisher,jdbcType=INTEGER}, 
+      #{state,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="exam_id" keyProperty="examId" parameterType="com.zy.oes.entity.Exam" useGeneratedKeys="true">
+    insert into exam
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+      <if test="paperId != null">
+        paper_id,
+      </if>
+      <if test="examName != null">
+        exam_name,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="subject != null">
+        subject,
+      </if>
+      <if test="releasedTime != null">
+        released_time,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="publisher != null">
+        publisher,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="paperId != null">
+        #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="examName != null">
+        #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="subject != null">
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="releasedTime != null">
+        #{releasedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publisher != null">
+        #{publisher,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zy.oes.entity.Exam">
+    update exam
+    <set>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="paperId != null">
+        paper_id = #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="examName != null">
+        exam_name = #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=INTEGER},
+      </if>
+      <if test="subject != null">
+        subject = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="releasedTime != null">
+        released_time = #{releasedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publisher != null">
+        publisher = #{publisher,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where exam_id = #{examId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zy.oes.entity.Exam">
+    update exam
+    set teacher_id = #{teacherId,jdbcType=INTEGER},
+      paper_id = #{paperId,jdbcType=INTEGER},
+      exam_name = #{examName,jdbcType=VARCHAR},
+      category = #{category,jdbcType=INTEGER},
+      subject = #{subject,jdbcType=VARCHAR},
+      released_time = #{releasedTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      publisher = #{publisher,jdbcType=INTEGER},
+      `state` = #{state,jdbcType=INTEGER}
+    where exam_id = #{examId,jdbcType=INTEGER}
+  </update>
+</mapper>

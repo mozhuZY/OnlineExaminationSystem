@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.dao.TeacherDao">
+  <resultMap id="BaseResultMap" type="com.zy.oes.entity.Teacher">
+    <id column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+    <result column="name" jdbcType="CHAR" property="name" />
+    <result column="tel" jdbcType="CHAR" property="tel" />
+    <result column="org" jdbcType="VARCHAR" property="org" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    teacher_id, `name`, tel, org
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from teacher
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from teacher
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="teacher_id" keyProperty="teacherId" parameterType="com.zy.oes.entity.Teacher" useGeneratedKeys="true">
+    insert into teacher (`name`, tel, org)
+    values (#{name,jdbcType=CHAR}, #{tel,jdbcType=CHAR}, #{org,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="teacher_id" keyProperty="teacherId" parameterType="com.zy.oes.entity.Teacher" useGeneratedKeys="true">
+    insert into teacher
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="org != null">
+        org,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=CHAR},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=CHAR},
+      </if>
+      <if test="org != null">
+        #{org,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zy.oes.entity.Teacher">
+    update teacher
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=CHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=CHAR},
+      </if>
+      <if test="org != null">
+        org = #{org,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zy.oes.entity.Teacher">
+    update teacher
+    set `name` = #{name,jdbcType=CHAR},
+      tel = #{tel,jdbcType=CHAR},
+      org = #{org,jdbcType=VARCHAR}
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </update>
+</mapper>
