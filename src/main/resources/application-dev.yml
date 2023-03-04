@@ -6,3 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 147258369asd
+
+#统一文件存放路径
+oes:
+  path:

@@ -1,8 +1,0 @@
-server:
-  port: 8081
-spring:
-  datasource:
-    url: jdbc:mysql://locahost:3306/oes?serverTimeZone=Shanghai
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 147258369asd

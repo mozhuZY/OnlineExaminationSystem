@@ -1,3 +1,29 @@
+# spring配置
 spring:
+  # 设置spring运行环境
   profiles:
-    active: dev
+    active: local
+  # 设置App名字
+  application:
+    name: OnlineExaminationSystem
+  # 文件上传下载大小限制
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+  # 开启循环依赖
+  main:
+    allow-circular-references: true
+  # springMVC配置
+  mvc:
+    # 解决spring解析路径和swagger冲突问题
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    # 开启下划线转驼峰
+    map-underscore-to-camel-case: true
+    # 指定输出日志类
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
