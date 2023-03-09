@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(tags = "用户接口")
 @RestController
-@RequestMapping("/user/user")
+@RequestMapping("/api/user/user")
 public class UserController {
 
     @ApiOperation("测试Swagger")
     @GetMapping("/getTest")
     public User getTestString() {
         User user = new User();
-        user.setUserId(1111L);
+        user.setId(1111L);
         user.setUsername("zy");
         user.setPassword("123456");
         return user;

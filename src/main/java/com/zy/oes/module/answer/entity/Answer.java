@@ -6,6 +6,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.zy.oes.common.base.entity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,15 +22,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("answer")
-public class Answer implements Serializable {
+public class Answer extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 答案id
-     */
-    @TableId("ans_id")
-    private Integer ansId;
 
     /**
      * 考试id
@@ -53,36 +49,4 @@ public class Answer implements Serializable {
      */
     @TableField("total_score")
     private BigDecimal totalScore;
-
-    /**
-     * 创建时间
-     */
-    @TableField("create_time")
-    private Date createTime;
-
-    /**
-     * 创建用户id
-     */
-    @TableField("create_user")
-    private Long createUser;
-
-    /**
-     * 更新时间
-     */
-    @TableField("update_time")
-    private Date updateTime;
-
-    /**
-     * 更新用户id
-     */
-    @TableField("update_user")
-    private Long updateUser;
-
-    /**
-     * 逻辑删除标志
-     */
-    @TableField("is_del")
-    private Boolean isDel;
-
-
 }

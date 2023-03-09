@@ -2,12 +2,11 @@ package com.zy.oes.module.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
-import com.zy.oes.common.base.BaseEntity;
+import com.zy.oes.common.base.entity.AbstractEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,17 +26,9 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value = "user",description = "User表实体类")
 @TableName("user")
-public class User extends BaseEntity implements Serializable {
+public class User extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 用户id
-     */
-    @ApiModelProperty("用户id")
-    @NotNull
-    @TableId(value = "user_id", type = IdType.AUTO)
-    private Long userId;
 
     /**
      * 用户名

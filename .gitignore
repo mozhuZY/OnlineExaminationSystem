@@ -1,0 +1,11 @@
+# 忽略本身
+#.gitignore
+
+# target生成文件
+target/
+
+# idea生成文件
+.idea
+
+# 测试类不需要提交
+src/test

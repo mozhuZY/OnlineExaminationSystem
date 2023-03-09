@@ -13,8 +13,8 @@ import lombok.Getter;
  */
 @Getter
 public class ApiException extends RuntimeException {
-    private int code;
-    private String msg;
+    private final int code;
+    private final String msg;
 
     /**
      * @title ApiException

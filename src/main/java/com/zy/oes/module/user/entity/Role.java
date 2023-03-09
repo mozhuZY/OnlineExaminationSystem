@@ -25,12 +25,6 @@ public class Role implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色id
-     */
-    @TableId(value = "role_id", type = IdType.AUTO)
-    private Long roleId;
-
-    /**
      * 角色名称
      */
     @TableField("role_name")
@@ -41,36 +35,4 @@ public class Role implements Serializable {
      */
     @TableField("pre")
     private Long pre;
-
-    /**
-     * 创建时间
-     */
-    @TableField("create_time")
-    private Date createTime;
-
-    /**
-     * 创建者id
-     */
-    @TableField("create_user")
-    private Long createUser;
-
-    /**
-     * 更新时间
-     */
-    @TableField("update_time")
-    private Date updateTime;
-
-    /**
-     * 更新者id
-     */
-    @TableField("update_user")
-    private Long updateUser;
-
-    /**
-     * 逻辑删除标志
-     */
-    @TableField("is_del")
-    private Boolean isDel;
-
-
 }

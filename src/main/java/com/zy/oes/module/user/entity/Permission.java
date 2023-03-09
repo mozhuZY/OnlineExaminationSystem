@@ -25,12 +25,6 @@ public class Permission implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 权限id
-     */
-    @TableId(value = "perm_id", type = IdType.AUTO)
-    private Long permId;
-
-    /**
      * 权限名称
      */
     @TableField("perm_name")
@@ -41,36 +35,4 @@ public class Permission implements Serializable {
      */
     @TableField("type")
     private Integer type;
-
-    /**
-     * 创建日期
-     */
-    @TableField("create_time")
-    private Date createTime;
-
-    /**
-     * 创建用户id
-     */
-    @TableField("create_user")
-    private Long createUser;
-
-    /**
-     * 更新日期
-     */
-    @TableField("update_time")
-    private Date updateTime;
-
-    /**
-     * 更新用户id
-     */
-    @TableField("update_user")
-    private Long updateUser;
-
-    /**
-     * 逻辑删除标志
-     */
-    @TableField("is_del")
-    private Boolean isDel;
-
-
 }

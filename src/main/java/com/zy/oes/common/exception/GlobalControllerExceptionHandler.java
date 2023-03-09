@@ -2,6 +2,8 @@ package com.zy.oes.common.exception;
 
 import com.zy.oes.common.response.ApiResult;
 import com.zy.oes.common.response.ResultCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
+
     /**
      * @title bindExceptionHandler
      * @description <p> 参数校验异常 </p>
@@ -30,6 +34,7 @@ public class GlobalControllerExceptionHandler {
         // 从异常对象中拿到ObjectError对象
         ObjectError error = e.getBindingResult().getAllErrors().get(0);
         // 这里需要打印日志
+        LOGGER.error(e.getMessage(), e);
         return new ApiResult<>(ResultCode.VALIDATE_ERROR, error.getDefaultMessage());
     }
 
@@ -44,6 +49,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ApiResult<Object> ApiExceptionHandler(ApiException e) {
         // 这里需要打印日志
+        LOGGER.error(e.getMessage(), e);
         return new ApiResult<>(e.getCode(), e.getMsg(), e.getMessage());
     }
 }
