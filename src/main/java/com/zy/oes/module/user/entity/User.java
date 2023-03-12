@@ -47,20 +47,6 @@ public class User extends AbstractEntity implements Serializable {
     private String password;
 
     /**
-     * 性别
-     */
-    @ApiModelProperty("性别")
-    @TableField("sex")
-    private String sex;
-
-    /**
-     * 年龄
-     */
-    @ApiModelProperty("年龄")
-    @TableField("age")
-    private Integer age;
-
-    /**
      * 邮箱
      */
     @ApiModelProperty("邮箱")
