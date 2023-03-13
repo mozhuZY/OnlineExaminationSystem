@@ -35,7 +35,7 @@ public class GlobalControllerExceptionHandler {
         ObjectError error = e.getBindingResult().getAllErrors().get(0);
         // 这里需要打印日志
         LOGGER.error(e.getMessage(), e);
-        return new ApiResult<>(ResultCode.VALIDATE_ERROR, error.getDefaultMessage());
+        return new ApiResult<>(ResultCode.VALIDATE_FAIL, error.getDefaultMessage());
     }
 
     /**
