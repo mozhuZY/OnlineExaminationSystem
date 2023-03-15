@@ -62,7 +62,7 @@ public class ApiUtil<T> {
      * @param msg 返回信息
      * @return {@link ApiResult<String>}
      */
-    public static ApiResult<String> fail(String msg) {
+    public static <T> ApiResult<String> fail(String msg) {
         return new ApiResult<>(msg);
     }
 
@@ -74,7 +74,7 @@ public class ApiUtil<T> {
      * @param code 返回码
      * @return {@link ApiResult<String>}
      */
-    public static ApiResult<String> fail(ResultCode code) {
+    public static <T> ApiResult<String> fail(ResultCode code) {
         return new ApiResult<>(code);
     }
 
@@ -87,7 +87,7 @@ public class ApiUtil<T> {
      * @param data 返回具体信息
      * @return {@link ApiResult<String>}
      */
-    public static ApiResult<String> fail(ResultCode code, String data) {
+    public static <T> ApiResult<String> fail(ResultCode code, String data) {
         return new ApiResult<>(code, data);
     }
 
@@ -99,7 +99,7 @@ public class ApiUtil<T> {
      * @param code 错误码
      * @return {@link ApiResult<String>}
      */
-    public static ApiResult<String> error(ErrorCode code) {
+    public static <T> ApiResult<String> error(ErrorCode code) {
         return new ApiResult<>(code);
     }
 
@@ -112,7 +112,7 @@ public class ApiUtil<T> {
      * @param data 返回提示信息
      * @return {@link ApiResult<String>}
      */
-    public static ApiResult<String> error(ErrorCode code, String data) {
+    public static <T> ApiResult<String> error(ErrorCode code, String data) {
         return new ApiResult<>(code, data);
     }
 }

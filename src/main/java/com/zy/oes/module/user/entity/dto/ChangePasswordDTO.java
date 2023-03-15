@@ -21,11 +21,11 @@ import javax.validation.constraints.Size;
 @ApiModel("修改密码DTO")
 public class ChangePasswordDTO {
 
-    @ApiModelProperty("旧密码")
+    @ApiModelProperty(value = "旧密码", required = true)
     @NotBlank(message = "旧密码不能为空")
     private String oldPassword;
 
-    @ApiModelProperty("新密码不能为空")
+    @ApiModelProperty(value = "新密码不能为空", required = true)
     @NotBlank
     @Size(min = 8, max = 16, message = "密码格式不正确")
     private String newPassword;

@@ -1,12 +1,13 @@
 package com.zy.oes.module.user.service;
 
+import com.zy.oes.common.base.entity.Ids;
 import com.zy.oes.common.base.service.IBaseService;
-import com.zy.oes.common.response.ApiResult;
 import com.zy.oes.common.token.Token;
 import com.zy.oes.module.user.entity.User;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy.oes.module.user.entity.dto.ChangePasswordDTO;
 import com.zy.oes.module.user.entity.dto.LoginDTO;
+import com.zy.oes.module.user.entity.vo.LoginVO;
+import com.zy.oes.module.user.entity.vo.UserInfoVO;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -27,18 +28,7 @@ public interface IUserService extends IBaseService<User> {
      * @param loginDTO 登录信息
      * @return {@link int}
      */
-    User login(LoginDTO loginDTO);
-
-    /**
-     * @title getUserByUserId
-     * @description <p> 根据用户id查询用户信息 </p>
-     * @date 2023/3/14 1:32
-     * @author MoZhu
-     * @param userId 用户id
-     * @return {@link com.zy.oes.module.user.entity.User}
-     */
-
-    User getUserByUserId(Long userId);
+    LoginVO login(LoginDTO loginDTO);
 
     /**
      * @title addUser
@@ -50,6 +40,17 @@ public interface IUserService extends IBaseService<User> {
      */
     @Transactional(rollbackFor = {Exception.class})
     int addUser(User user);
+
+    /**
+     * @title removeUser
+     * @description <p> 批量逻辑删除用户 </p>
+     * @date 2023/3/15 4:15
+     * @author MoZhu
+     * @param ids id列表
+     * @return {@link int}
+     */
+    @Transactional(rollbackFor = {Exception.class})
+    int removeUser(Ids ids);
 
     /**
      * @title changePassword

@@ -74,4 +74,28 @@ public class TokenUtil {
         String tokenStr = DigestUtil.md5Hex(Long.toString(new Date().getTime()) + user.getId());
         return new Token(tokenStr);
     }
+
+    /**
+     * @title getCurrentToken
+     * @description <p> 获取当前请求的token </p>
+     * @date 2023/3/15 3:49
+     * @author MoZhu
+     * @param
+     * @return {@link Token}
+     */
+    public Token getCurrentToken() {
+        return new Token(HttpUtil.getCurrentRequest().getHeader(Token.HEADER));
+    }
+
+    /**
+     * @title getCurrentUser
+     * @description <p> 获取当前请求用户 </p>
+     * @date 2023/3/15 3:50
+     * @author MoZhu
+     * @param
+     * @return {@link User}
+     */
+    public User getCurrentUser() {
+        return getUser(getCurrentToken());
+    }
 }

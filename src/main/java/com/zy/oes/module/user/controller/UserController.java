@@ -1,6 +1,7 @@
 package com.zy.oes.module.user.controller;
 
 
+import com.zy.oes.common.base.entity.Ids;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ErrorCode;
 import com.zy.oes.common.response.ResultCode;
@@ -10,6 +11,7 @@ import com.zy.oes.module.user.entity.User;
 import com.zy.oes.module.user.entity.dto.ChangePasswordDTO;
 import com.zy.oes.module.user.entity.dto.LoginDTO;
 import com.zy.oes.module.user.entity.vo.LoginVO;
+import com.zy.oes.module.user.entity.vo.UserInfoVO;
 import com.zy.oes.module.user.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,25 +59,11 @@ public class UserController {
     @PostMapping("/login")
     public LoginVO login(@RequestBody @Valid LoginDTO loginDTO) throws ApiException {
         LOGGER.info(loginDTO.toString());
-        User user = this.service.login(loginDTO);
-        if (user == null) {
+        LoginVO vo = this.service.login(loginDTO);
+        if (vo == null) {
             throw new ApiException(ResultCode.LOGIN_FAIL, "用户名或密码错误");
         }
-        return new LoginVO(tokenUtil.setToken(user).getToken(), user);
-    }
-
-    /**
-     * @title getUserByUserId
-     * @description <p> 根据用户id查询用户详细信息 </p>
-     * @date 2023/3/14 1:35
-     * @author MoZhu
-     * @param userId 用户id
-     * @return {@link User}
-     */
-    @ApiOperation("根据用户id查询用户详细信息")
-    @GetMapping("/get")
-    public User getUserByUserId(@RequestParam("userId") Long userId) {
-        return this.service.getUserByUserId(userId);
+        return vo;
     }
 
     /**
@@ -89,12 +77,41 @@ public class UserController {
     @ApiOperation("注册用户")
     @PostMapping("/add")
     public String addUser(@RequestBody @Valid User user) throws ApiException {
-        if (this.service.addUser(user) == 1) {
-            return "添加成功";
-        } else {
-            throw new ApiException("注册失败");
+        switch(this.service.addUser(user)) {
+            case 1:
+                return "添加成功";
+            case -1:
+                throw new ApiException("用户名已存在");
+            default:
+                throw new ApiException("注册失败");
         }
     }
+
+    /**
+     * @title removeUser
+     * @description <p> 逻辑删除用户信息 </p>
+     * @date 2023/3/15 4:13
+     * @author MoZhu
+     * @param ids id列表
+     * @return {@link String}
+     */
+    public String removeUser(@RequestParam("userId") Ids ids) {
+        if (this.service.remove(ids) > 0) {
+            return "删除成功";
+        } else {
+            throw new ApiException(ResultCode.REMOVE_FAIL, "id不能为空");
+        }
+    }
+
+    /**
+     * @title modifyPassword
+     * @description <p> 修改当前用户密码 </p>
+     * @date 2023/3/14 2:26
+     * @author MoZhu
+     * @param changePasswordDTO 修改密码对象
+     * @param request 请求报文
+     * @return {@link String}
+     */
 
     @ApiOperation("修改密码")
     @PostMapping("/modify/password")

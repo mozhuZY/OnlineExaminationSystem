@@ -52,4 +52,19 @@ public class GlobalControllerExceptionHandler {
         LOGGER.error(e.getMessage(), e);
         return new ApiResult<>(e.getCode(), e.getMsg(), e.getMessage());
     }
+
+    /**
+     * @title otherExceptionHandler
+     * @description <p> 其他异常 </p>
+     * @date 2023/3/15 2:38
+     * @author MoZhu
+     * @param e 其他异常
+     * @return {@link ApiResult<Object>}
+     */
+    @ExceptionHandler(Exception.class)
+    public ApiResult<Object> otherExceptionHandler(Exception e) {
+        // 这里需要打印日志
+        LOGGER.error(e.getMessage(), e);
+        return new ApiResult<>(500, e.getMessage(), null);
+    }
 }
