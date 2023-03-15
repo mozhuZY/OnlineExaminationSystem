@@ -9,9 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @projectName: OnlineExaminationSystem
@@ -26,13 +28,19 @@ import java.util.Date;
 public class TokenUtil {
 
     /**
-     * redis
+     * redisTemplate
      */
-    private final HashOperations<String, String, String> hash;
+    private final StringRedisTemplate template;
+
+    /**
+     * redis-hash
+     */
+    private final ValueOperations<String, String> redis;
 
     @Autowired
     public TokenUtil(StringRedisTemplate template) {
-        this.hash = template.opsForHash();
+        this.template = template;
+        this.redis = template.opsForValue();
     }
 
     /**
@@ -46,7 +54,9 @@ public class TokenUtil {
     public Token setToken(User user) {
         // 生成token
         Token token = generalToken(user);
-        hash.put(Token.HEADER, token.getToken(), JSON.toJSONString(user));
+        redis.append(token.getToken(), JSON.toJSONString(user));
+        // 设置过期时间
+        template.expire(token.getToken(), Token.ALIVE, TimeUnit.SECONDS);
         return token;
     }
 
@@ -59,7 +69,7 @@ public class TokenUtil {
      * @author MoZhu
      */
     public User getUser(Token token) {
-        return (User) JSON.parseObject(hash.get(Token.HEADER, token.getToken()), User.class);
+        return (User) JSON.parseObject(redis.get(token.getToken()), User.class);
     }
 
     /**

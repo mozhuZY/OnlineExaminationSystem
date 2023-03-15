@@ -1,5 +1,6 @@
 package com.zy.oes.common.response;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.MethodParameter;
@@ -30,13 +31,8 @@ public class GlobalControllerResponseHandler implements ResponseBodyAdvice<Objec
     public Object beforeBodyWrite(Object data, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         // String类型不能直接包装
         if (returnType.getGenericParameterType().equals(String.class)) {
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                // 将数据包装再ApiResult中在转换为json串返回
-                return mapper.writeValueAsString(new ApiResult<>(data));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            // 将数据包装再ApiResult中在转换为json串返回
+            return JSON.toJSONString(new ApiResult<>(data));
         }
         // 否则直接包装成ApiResult返回
         return new ApiResult<>(data);

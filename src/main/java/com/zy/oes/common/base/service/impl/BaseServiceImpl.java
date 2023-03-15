@@ -48,9 +48,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends AbstractEntity> 
             throw new ApiException("id不能为空");
         }
         // 批量逻辑删除
-        return this.baseMapper.update(null, new UpdateWrapper<T>()
-                .in("id", ids.getIds())
-                .eq("is_del", false));
+        return this.baseMapper.deleteBatchIds(ids.getIds());
     }
 
     @Override

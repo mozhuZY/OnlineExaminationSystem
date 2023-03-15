@@ -24,8 +24,8 @@ public enum ResultCode implements StatusCode {
     ADD_FAIL(3101, "添加失败"),
     REMOVE_SUCCESS(3200, "删除成功"),
     REMOVE_FAIL(3201, "删除失败"),
-    UPDATE_SUCCESS(3300, "修改成功"),
-    UPDATE_FAIL(3301, "修改失败");
+    MODIFY_SUCCESS(3300, "修改成功"),
+    MODIFY_FAIL(3301, "修改失败");
 
     private final int code;
     private final String msg;

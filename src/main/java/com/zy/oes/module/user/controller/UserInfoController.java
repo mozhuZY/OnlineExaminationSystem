@@ -26,7 +26,7 @@ import javax.validation.Valid;
  */
 @Api(tags = "用户信息接口")
 @RestController
-@RequestMapping("/user/info")
+@RequestMapping("/api/user/info")
 public class UserInfoController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class UserInfoController {
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(dto, userInfo);
         if (this.service.modifyUserInfo(userInfo) == 0) {
-            throw new ApiException(ResultCode.UPDATE_FAIL, "此用户不存在");
+            throw new ApiException(ResultCode.MODIFY_FAIL, "此用户不存在");
         }
         return "修改成功";
     }
