@@ -1,5 +1,6 @@
 package com.zy.oes.module.user.service;
 
+import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.user.entity.Permission;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,6 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author MoZhu
  * @since 2023-03-04
  */
-public interface IPermissionService extends IService<Permission> {
+public interface IPermissionService extends IBaseService<Permission> {
 
 }

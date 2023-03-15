@@ -1,8 +1,10 @@
 package com.zy.oes.common.base.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.AbstractEntity;
 import com.zy.oes.common.base.entity.Ids;
+import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.exception.ApiException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,4 +49,24 @@ public interface IBaseService<T extends AbstractEntity> extends IService<T> {
      */
     @Transactional(rollbackFor = {ApiException.class})
     int modify(T entity) throws ApiException;
+
+    /**
+     * @title getById
+     * @description <p> 根据id查询 </p>
+     * @date 2023/3/16 1:37
+     * @author MoZhu
+     * @param id id
+     * @return {@link T}
+     */
+    T getById(Long id);
+
+    /**
+     * @title getPage
+     * @description <p> 分页查询 </p>
+     * @date 2023/3/16 1:37
+     * @author MoZhu
+     * @param pageDTO 分页信息
+     * @return {@link PageInfo<T>}
+     */
+    PageInfo<T> getPage(PageDTO pageDTO);
 }

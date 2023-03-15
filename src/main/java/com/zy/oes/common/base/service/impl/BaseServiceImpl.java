@@ -1,12 +1,16 @@
 package com.zy.oes.common.base.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.AbstractEntity;
 import com.zy.oes.common.base.entity.Ids;
+import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.common.exception.ApiException;
+import com.zy.oes.common.response.ErrorCode;
 import com.zy.oes.common.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,13 +57,26 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends AbstractEntity> 
 
     @Override
     public int modify(T entity) throws ApiException {
-        if (entity.getId() == null) {
-            throw new ApiException("id不能为空");
+        if (this.baseMapper.selectById(entity.getId()) == null) {
+            throw new ApiException("此id不存在");
         }
         // 防止修改通用字段
         entity.setCreateTime(null);
         // 更新字段修改时间
         entity.setUpdateTime(new Date());
         return this.baseMapper.updateById(entity);
+    }
+
+    @Override
+    public T getById(Long id) {
+        return this.baseMapper.selectById(id);
+    }
+
+    @Override
+    public PageInfo<T> getPage(PageDTO pageDTO) {
+        if (pageDTO.getPageNum() < 1 || pageDTO.getPageSize() < 1) {
+            throw new ApiException(ErrorCode.PAGE_ERROR);
+        }
+        return new PageInfo<>(this.baseMapper.selectList(new QueryWrapper<>()));
     }
 }

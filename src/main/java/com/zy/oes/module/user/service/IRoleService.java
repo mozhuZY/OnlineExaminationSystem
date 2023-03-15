@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.user.entity.Role;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>

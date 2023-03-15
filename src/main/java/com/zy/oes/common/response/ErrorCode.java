@@ -14,6 +14,7 @@ public enum ErrorCode implements StatusCode{
     // 2000 - 2099 -> 系统异常
     APP_ERROR(2000, "业务异常"),
     AUTHENTICATION_ERROR(2001, "认证异常"),
+    PAGE_ERROR(2002, "分页信息异常"),
     // 2100 - 2199 -> 用户模块异常
     LOGIN_ERROR(2100, "登录异常");
     // 2200 - 2299 -> 考试模块异常

@@ -30,6 +30,19 @@ public class ApiException extends RuntimeException {
         // 状态码
         this.code = statusCode.getCode();
         // 状态信息
+        this.msg = message;
+    }
+
+    /**
+     * @title ApiException
+     * @description <p> 只返回枚举异常信息 </p>
+     * @date 2023/3/16 1:21
+     * @author MoZhu
+     * @param statusCode 状态码
+     */
+    public ApiException(StatusCode statusCode) {
+        super(statusCode.getMsg());
+        this.code = statusCode.getCode();
         this.msg = statusCode.getMsg();
     }
 
