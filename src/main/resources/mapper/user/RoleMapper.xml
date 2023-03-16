@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.module.user.mapper.RoleMapper">
+    <insert id="insertUserRole">
+        insert into r_user_role values
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+            null, #{userId}, #{roleId}, now(), now(), 0
+        </foreach>
+    </insert>
+
+    <delete id="deleteUserRole">
+        delete from r_user_role where user_id = #{userId} and role_id in
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <select id="selectRoleByUserId" resultType="com.zy.oes.module.user.entity.vo.RoleVO">
+        select id, role_name, pre from role where id in (select role_id from r_user_role where user_id = #{userId}) and is_del = 0
+    </select>
+</mapper>

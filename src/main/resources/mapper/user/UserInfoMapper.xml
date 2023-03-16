@@ -15,9 +15,4 @@
         <result column="is_del" property="isDel" />
     </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, user_id, real_name, gender, age, org, create_time, update_time, is_del
-    </sql>
-
 </mapper>

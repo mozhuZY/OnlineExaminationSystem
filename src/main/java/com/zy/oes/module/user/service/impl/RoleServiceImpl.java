@@ -5,10 +5,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.base.service.impl.BaseServiceImpl;
+import com.zy.oes.common.exception.ApiException;
+import com.zy.oes.common.response.ResultCode;
 import com.zy.oes.module.user.entity.Role;
+import com.zy.oes.module.user.entity.dto.UpdateUserRolesDTO;
+import com.zy.oes.module.user.entity.vo.RoleVO;
 import com.zy.oes.module.user.mapper.RoleMapper;
 import com.zy.oes.module.user.service.IRoleService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,5 +35,26 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             return null;
         }
         return new PageInfo<>(roleList);
+    }
+
+    @Override
+    public List<RoleVO> getRolesByUserId(Long userId) {
+        return this.baseMapper.selectRoleByUserId(userId);
+    }
+
+    @Override
+    public int addUserRoles(UpdateUserRolesDTO dto) throws ApiException {
+        if (dto.getRoleIds() == null || dto.getRoleIds().size() == 0) {
+            throw new ApiException(ResultCode.ADD_FAIL, "请至少新增一个角色");
+        }
+        return this.baseMapper.insertUserRole(dto.getUserId(), dto.getRoleIds());
+    }
+
+    @Override
+    public int removeUserRoles(UpdateUserRolesDTO dto) throws ApiException {
+        if (dto.getRoleIds() == null || dto.getRoleIds().size() == 0) {
+            throw new ApiException(ResultCode.ADD_FAIL, "请至少删除一个角色");
+        }
+        return this.baseMapper.deleteUserRole(dto.getUserId(), dto.getRoleIds());
     }
 }
