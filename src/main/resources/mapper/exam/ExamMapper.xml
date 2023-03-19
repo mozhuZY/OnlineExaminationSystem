@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.module.exam.mapper.ExamMapper">
+
+    <select id="selectPage" resultType="com.zy.oes.module.exam.entity.vo.ExamVO">
+        select id, paper_id, exam_name, category, subject, released_time, start_time, end_time state from exam where is_del = 0
+    </select>
+</mapper>

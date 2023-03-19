@@ -66,13 +66,13 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- jedis -->
+            <!-- jedis -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
 
-        <!-- spring2.X集成redis所需common-pool2-->
+            <!-- spring2.X集成redis所需common-pool2-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
@@ -98,7 +98,7 @@
             <version>5.8.7</version>
         </dependency>
 
-        <!-- swagger -->
+        <!-- swagger + knife4j -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>

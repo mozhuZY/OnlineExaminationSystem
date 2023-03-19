@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @className: ToKen
  * @author: MoZhu
  * @date: 2023/3/10 1:14
- * @description: <p>  </p>
+ * @description: <p> Token </p>
  */
 @Data
 @ApiModel("Token")

@@ -7,8 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
 import com.zy.oes.common.base.entity.AbstractEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -25,11 +28,8 @@ public class Exam extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 试卷id
-     */
     @TableField("paper_id")
-    private Integer paperId;
+    private Long paperId;
 
     /**
      * 考试名称

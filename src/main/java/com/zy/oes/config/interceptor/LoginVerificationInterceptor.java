@@ -32,12 +32,12 @@ public class LoginVerificationInterceptor implements HandlerInterceptor {
         String token = request.getHeader(Token.HEADER);
         // 拦截请求：未携带token
         if (token == null) {
-            response.getWriter().write(JSONObject.toJSONString(new ApiResult<String>(ErrorCode.AUTHENTICATION_ERROR, "登录验证失败，请重新登录")));
+            response.getWriter().write(JSONObject.toJSONString(new ApiResult<>(ErrorCode.AUTHENTICATION_ERROR, "登录验证失败，请重新登录")));
             return false;
         }
         // 拦截请求：不存在或已失效的token
         if (tokenUtil.getUser(new Token(token)) == null) {
-            response.getWriter().write(JSONObject.toJSONString(new ApiResult<String>(ErrorCode.AUTHENTICATION_ERROR, "不存在或已失效的token")));
+            response.getWriter().write(JSONObject.toJSONString(new ApiResult<>(ErrorCode.AUTHENTICATION_ERROR, "不存在或已失效的token")));
             return false;
         }
         return true;
