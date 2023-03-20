@@ -27,10 +27,16 @@ public class ChoiceQue extends AbstractEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 创建者id
+     */
+    @TableField("creator_id")
+    private Long creatorId;
+
+    /**
      * 试题描述
      */
-    @TableField("discript")
-    private String discript;
+    @TableField("description")
+    private String description;
 
     /**
      * 标准答案

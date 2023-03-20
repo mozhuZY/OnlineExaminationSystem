@@ -37,7 +37,7 @@ public class ApiUtil<T> {
      * @param code 状态码
      * @return {@link ApiResult<String>}
      */
-    public static ApiResult<String> success(ResultCode code) {
+    public static ApiResult<Object> success(ResultCode code) {
         return new ApiResult<>(code);
     }
 

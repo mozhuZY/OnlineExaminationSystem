@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -21,8 +22,8 @@ import java.util.List;
 @ApiModel("id封装")
 public class Ids implements Serializable {
 
-    @ApiModelProperty("id列表")
-    @NotNull
+    @ApiModelProperty(value = "id列表", required = true)
+    @NotEmpty
     private List<Long> ids;
 
     /**

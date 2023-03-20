@@ -4,6 +4,7 @@ import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.user.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zy.oes.module.user.entity.vo.UserInfoVO;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -33,5 +34,6 @@ public interface IUserInfoService extends IBaseService<UserInfo> {
      * @param userInfo 用户信息
      * @return {@link int}
      */
+    @Transactional
     int modifyUserInfo(UserInfo userInfo);
 }

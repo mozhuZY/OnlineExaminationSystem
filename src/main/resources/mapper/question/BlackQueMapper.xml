@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.module.question.mapper.BlankQueMapper">
+    <select id="selectBlankQueList" resultType="com.zy.oes.module.question.entity.BlankQue">
+        select * from blank_que where is_del = 0
+    </select>
+
+    <select id="selectBlankQueListByPaperId" resultType="com.zy.oes.module.question.entity.BlankQue">
+        select * from blank_que where id in (
+            select q_id from r_paper_bq where p_id = #{paperId} and is_del = 0
+        ) and is_del = 0
+    </select>
+</mapper>

@@ -23,8 +23,7 @@ public class GlobalControllerResponseHandler implements ResponseBodyAdvice<Objec
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         // response是ApiResult类型或注释了NotControllerResponseHandle都不进行包装
-        return !returnType.getParameterType().isAssignableFrom(ApiResult.class) ||
-                !returnType.hasMethodAnnotation(NotControllerResponseHandle.class);
+        return !returnType.getParameterType().isAssignableFrom(ApiResult.class) || !returnType.hasMethodAnnotation(NotControllerResponseHandle.class);
     }
 
     @Override

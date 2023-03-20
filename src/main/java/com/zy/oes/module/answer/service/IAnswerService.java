@@ -1,5 +1,6 @@
 package com.zy.oes.module.answer.service;
 
+import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.answer.entity.Answer;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,6 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author MoZhu
  * @since 2023-03-04
  */
-public interface IAnswerService extends IService<Answer> {
+public interface IAnswerService extends IBaseService<Answer> {
 
 }

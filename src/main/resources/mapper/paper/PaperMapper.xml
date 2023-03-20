@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zy.oes.module.paper.mapper.PaperMapper">
+    <resultMap id="paperDetail" type="com.zy.oes.module.paper.entity.vo.PaperDetailVO">
+        <id property="id" column="id"/>
+        <result property="subject" column="subject"/>
+        <result property="totalScore" column="total_score"/>
+    </resultMap>
+
+    <insert id="insertQuestion">
+        insert into
+        <if test="dto.type == 1">
+            r_paper_cq
+        </if>
+        <if test="dto.type == 2">
+            r_paper_bq
+        </if>
+        <if test="dto.type == 3">
+            r_paper_jq
+        </if>
+        <if test="dto.type == 4">
+            r_paper_sq
+        </if>
+        values(null, #{dto.paperId}, #{dto.queId}, #{dto.qNo}, #{dto.score}, now(), now(), 0)
+    </insert>
+
+    <update id="updateQuestion">
+        update
+        <if test="dto.type == 1">
+            r_paper_cq
+        </if>
+        <if test="dto.type == 2">
+            r_paper_bq
+        </if>
+        <if test="dto.type == 3">
+            r_paper_jq
+        </if>
+        <if test="dto.type == 4">
+            r_paper_sq
+        </if>
+        <set>
+            <if test="dto.qNo != null and dto.qNo != ''">
+                q_no = #{dto.qNo},
+            </if>
+            <if test="dto.score != null and dto.score != ''">
+                score = #{dto.score}
+            </if>
+        </set>
+        where p_id = #{dto.paperId} and q_id = #{dto.queId} and is_del = 0
+    </update>
+
+    <delete id="deleteQuestion">
+        update
+        <if test="dto.type == 1">
+            r_paper_cq
+        </if>
+        <if test="dto.type == 2">
+            r_paper_bq
+        </if>
+        <if test="dto.type == 3">
+            r_paper_jq
+        </if>
+        <if test="dto.type == 4">
+            r_paper_sq
+        </if>
+        set is_del = 1 where p_id = #{dto.paperId} and q_id = #{dto.queId}
+    </delete>
+
+    <select id="selectPaperDetail" resultMap="paperDetail">
+        select id, subject, total_score from paper where id = #{paperId} and is_del = 0
+    </select>
+
+    <select id="selectPaperPage" resultType="com.zy.oes.module.paper.entity.vo.PaperInfoVO">
+        select * from paper where is_del = 0
+    </select>
+</mapper>
