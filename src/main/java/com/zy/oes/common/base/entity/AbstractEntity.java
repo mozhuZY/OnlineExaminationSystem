@@ -44,7 +44,7 @@ public abstract class AbstractEntity implements Serializable {
     /**
      * 更新时间
      */
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

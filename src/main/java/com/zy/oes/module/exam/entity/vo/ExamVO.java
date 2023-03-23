@@ -24,6 +24,8 @@ import java.util.Date;
 @ApiModel("考试VO")
 public class ExamVO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(value = "考试id", required = true)
     @NotNull
     private Long id;
@@ -31,6 +33,12 @@ public class ExamVO implements Serializable {
     @ApiModelProperty(value = "试卷id", required = true)
     @NotNull
     private Long paperId;
+
+    @ApiModelProperty("创建者id")
+    private Long creatorId;
+
+    @ApiModelProperty("创建者姓名")
+    private String creatorName;
 
     @ApiModelProperty(value = "考试名称", required = true)
     @NotBlank

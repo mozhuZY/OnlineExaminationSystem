@@ -14,4 +14,4 @@ spring:
 
 #统一文件存放路径
 oes:
-  path: E:\oes_file\
+  path: E:/oes_file/

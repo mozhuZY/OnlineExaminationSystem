@@ -1,5 +1,6 @@
 package com.zy.oes.module.question.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.dto.PageDTO;
@@ -8,15 +9,19 @@ import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ErrorCode;
 import com.zy.oes.common.response.ResultCode;
 import com.zy.oes.common.util.StringUtil;
+import com.zy.oes.module.paper.entity.RPaperCq;
+import com.zy.oes.module.paper.service.IRPaperCqService;
 import com.zy.oes.module.question.entity.ChoiceQue;
 import com.zy.oes.module.question.entity.vo.ChoiceQueVO;
 import com.zy.oes.module.question.mapper.ChoiceQueMapper;
 import com.zy.oes.module.question.service.IChoiceQueService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -29,6 +34,9 @@ import java.util.List;
 @Service
 public class ChoiceQueServiceImpl extends BaseServiceImpl<ChoiceQueMapper, ChoiceQue> implements IChoiceQueService {
 
+    @Autowired
+    private IRPaperCqService cqService;
+
     @Override
     public PageInfo<ChoiceQueVO> getChoiceQuestionPage(PageDTO pageDTO) {
         if (pageDTO.getPageNum() < 0 || pageDTO.getPageSize() < 0) {
@@ -40,13 +48,21 @@ public class ChoiceQueServiceImpl extends BaseServiceImpl<ChoiceQueMapper, Choic
             throw new ApiException(ResultCode.QUERY_FAIL, "无数据");
         }
         // 转换为VO
-        return new PageInfo<>(entityToVO(list));
+        return new PageInfo<>(entityToVO(list, null));
     }
 
     @Override
     public List<ChoiceQueVO> getChoiceQuestionListByPageId(Long paperId) {
         List<ChoiceQue> list = this.baseMapper.selectChoiceQueListByPaperId(paperId);
-        return entityToVO(list);
+        // 获取试题分数
+        List<RPaperCq> cqs = cqService.getBaseMapper().selectList(new QueryWrapper<RPaperCq>()
+                .eq("p_id", paperId)
+                .in("q_id", list.stream().map(ChoiceQue::getId).collect(Collectors.toList())));
+        // 先排序
+        list.sort((o1, o2) -> o1.getId() < o2.getId() ? 0 : 1);
+        cqs.sort((o1, o2) -> o1.getQId() < o2.getQId() ? 0 : 1);
+        //转换实体类
+        return entityToVO(list, cqs);
     }
 
     /**
@@ -57,13 +73,16 @@ public class ChoiceQueServiceImpl extends BaseServiceImpl<ChoiceQueMapper, Choic
      * @param list 实体类列表
      * @return {@link List<ChoiceQueVO>}
      */
-    private List<ChoiceQueVO> entityToVO(List<ChoiceQue> list) {
+    private List<ChoiceQueVO> entityToVO(List<ChoiceQue> list, List<RPaperCq> cqs) {
         List<ChoiceQueVO> vos = new ArrayList<>();
-        for (ChoiceQue choiceQue : list) {
+        for (int i = 0; i < list.size(); i++) {
             ChoiceQueVO vo = new ChoiceQueVO();
-            BeanUtils.copyProperties(choiceQue, vo);
-            vo.setTags(StringUtil.combineStringToList(choiceQue.getTags()));
-            vo.setOpts(StringUtil.combineStringToList(choiceQue.getOpts()));
+            BeanUtils.copyProperties(list.get(i), vo);
+            vo.setTags(StringUtil.combineStringToList(list.get(i).getTags()));
+            vo.setOpts(StringUtil.combineStringToList(list.get(i).getOpts()));
+            if (cqs != null) {
+                vo.setScore(cqs.get(i).getScore());
+            }
             vos.add(vo);
         }
         return vos;

@@ -25,7 +25,12 @@ public enum ResultCode implements StatusCode {
     REMOVE_SUCCESS(3200, "删除成功"),
     REMOVE_FAIL(3201, "删除失败"),
     MODIFY_SUCCESS(3300, "修改成功"),
-    MODIFY_FAIL(3301, "修改失败");
+    MODIFY_FAIL(3301, "修改失败"),
+
+    ENROLL_FAIL(4000, "报名失败"),
+
+    FILE_STORE_FAIL(5000, "文件存储失败"),
+    FILE_READ_FAIL(5001, "文件读取失败");
 
     private final int code;
     private final String msg;

@@ -6,6 +6,7 @@ import com.zy.oes.common.base.entity.Ids;
 import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ResultCode;
+import com.zy.oes.common.util.TokenUtil;
 import com.zy.oes.module.exam.entity.Exam;
 import com.zy.oes.module.exam.entity.dto.ExamDTO;
 import com.zy.oes.module.exam.entity.dto.ModifyExamDTO;
@@ -34,6 +35,9 @@ public class ExamController {
 
     @Autowired
     private IExamService service;
+
+    @Autowired
+    private TokenUtil tokenUtil;
 
     /**
      * @title getExam
@@ -76,6 +80,7 @@ public class ExamController {
     public String addExam(@RequestBody @Valid ExamDTO dto) {
         Exam exam = new Exam();
         BeanUtils.copyProperties(dto, exam);
+        exam.setCreatorId(tokenUtil.getCurrentUser().getId());
         exam.setState(0);
         if (this.service.add(exam) == 0) {
             throw new ApiException(ResultCode.ADD_FAIL);

@@ -28,8 +28,17 @@ public class Exam extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 试卷id
+     */
     @TableField("paper_id")
     private Long paperId;
+
+    /**
+     * 创建者id
+     */
+    @TableField("creator_id")
+    private Long creatorId;
 
     /**
      * 考试名称

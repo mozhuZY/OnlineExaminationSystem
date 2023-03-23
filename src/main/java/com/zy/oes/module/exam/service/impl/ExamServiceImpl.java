@@ -12,7 +12,9 @@ import com.zy.oes.module.exam.entity.Exam;
 import com.zy.oes.module.exam.entity.vo.ExamVO;
 import com.zy.oes.module.exam.mapper.ExamMapper;
 import com.zy.oes.module.exam.service.IExamService;
+import com.zy.oes.module.user.service.IUserInfoService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,9 @@ import java.util.List;
 @Service
 public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implements IExamService {
 
+    @Autowired
+    private IUserInfoService userInfoService;
+
     @Override
     public ExamVO getExam(Long id) {
         Exam exam = this.baseMapper.selectOne(new QueryWrapper<Exam>()
@@ -38,6 +43,8 @@ public class ExamServiceImpl extends BaseServiceImpl<ExamMapper, Exam> implement
         }
         ExamVO examVO = new ExamVO();
         BeanUtils.copyProperties(exam, examVO);
+        // 获取创建者姓名
+        examVO.setCreatorName(userInfoService.getById(exam.getCreatorId()).getRealName());
         return examVO;
     }
 

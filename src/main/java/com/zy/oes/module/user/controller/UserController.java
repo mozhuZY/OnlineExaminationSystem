@@ -11,7 +11,6 @@ import com.zy.oes.module.user.entity.User;
 import com.zy.oes.module.user.entity.dto.ChangePasswordDTO;
 import com.zy.oes.module.user.entity.dto.LoginDTO;
 import com.zy.oes.module.user.entity.vo.LoginVO;
-import com.zy.oes.module.user.entity.vo.UserInfoVO;
 import com.zy.oes.module.user.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -75,7 +74,7 @@ public class UserController {
      * @return {@link String}
      */
     @ApiOperation("注册用户")
-    @PostMapping("/add")
+    @PostMapping("/register")
     public String addUser(@RequestBody @Valid User user) throws ApiException {
         switch(this.service.addUser(user)) {
             case 1:
@@ -95,6 +94,8 @@ public class UserController {
      * @param ids id列表
      * @return {@link String}
      */
+    @ApiOperation("注销用户")
+    @DeleteMapping("/remove")
     public String removeUser(@RequestParam("userId") Ids ids) {
         if (this.service.remove(ids) > 0) {
             return "删除成功";
