@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,15 @@ public class Ids implements Serializable {
     @ApiModelProperty(value = "id列表", required = true)
     @NotEmpty
     private List<Long> ids;
+
+    public Ids() {
+
+    }
+
+    public Ids(Long id) {
+        this.ids = new ArrayList<>();
+        this.ids.add(id);
+    }
 
     /**
      * @title getId

@@ -14,4 +14,9 @@ spring:
 
 #统一文件存放路径
 oes:
-  path: E:/oes_file/
+  path: E:\oes_file\
+  picture:
+    base: E:\oes_file\picture\
+    user-picture: E:\oes_file\picture\user
+    exam-picture: E:\oes_file\picture\exam
+    banner-picture: E:\oes_file\picture\banner

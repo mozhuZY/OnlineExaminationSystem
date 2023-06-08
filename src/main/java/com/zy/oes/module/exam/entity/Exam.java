@@ -1,12 +1,16 @@
 package com.zy.oes.module.exam.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.util.ArrayList;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
 
 import com.zy.oes.common.base.entity.AbstractEntity;
+import com.zy.oes.common.base.entity.EntityState;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +31,8 @@ import javax.validation.constraints.NotNull;
 public class Exam extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static final EntityState[] states = getStates();
 
     /**
      * 试卷id
@@ -77,8 +83,23 @@ public class Exam extends AbstractEntity implements Serializable {
     private Date endTime;
 
     /**
+     * 考试图片
+     */
+    @TableField("picture_id")
+    private Long pictureId;
+
+    /**
      * 考试状态
      */
     @TableField("state")
     private Integer state;
+
+    private static EntityState[] getStates() {
+        return new EntityState[]{
+                new EntityState(0, "待审核"),
+                new EntityState(1, "已发布"),
+                new EntityState(2, "正在考试"),
+                new EntityState(3, "已结束")
+        };
+    }
 }

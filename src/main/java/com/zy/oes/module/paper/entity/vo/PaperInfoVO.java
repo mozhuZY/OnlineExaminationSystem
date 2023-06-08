@@ -24,9 +24,15 @@ public class PaperInfoVO implements Serializable {
     @ApiModelProperty("试卷id")
     private Long id;
 
+    @ApiModelProperty("试卷标题")
+    private String title;
+
     @ApiModelProperty("学科")
     private String subject;
 
     @ApiModelProperty("试卷总分")
     private BigDecimal totalScore;
+
+    @ApiModelProperty("试卷可否编辑（修改/删除）")
+    private boolean isEditable;
 }

@@ -3,24 +3,31 @@ package com.zy.oes.module.user.controller;
 
 import com.zy.oes.common.base.entity.Ids;
 import com.zy.oes.common.exception.ApiException;
+import com.zy.oes.common.response.ApiResult;
 import com.zy.oes.common.response.ErrorCode;
 import com.zy.oes.common.response.ResultCode;
 import com.zy.oes.common.token.Token;
-import com.zy.oes.common.util.TokenUtil;
+import com.zy.oes.common.util.*;
 import com.zy.oes.module.user.entity.User;
+import com.zy.oes.module.user.entity.UserInfo;
 import com.zy.oes.module.user.entity.dto.ChangePasswordDTO;
 import com.zy.oes.module.user.entity.dto.LoginDTO;
+import com.zy.oes.module.user.entity.dto.ModifyUserDTO;
+import com.zy.oes.module.user.entity.dto.RegisterDTO;
 import com.zy.oes.module.user.entity.vo.LoginVO;
+import com.zy.oes.module.user.service.IUserInfoService;
 import com.zy.oes.module.user.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.UUID;
 
 /**
  * <p>
@@ -30,6 +37,7 @@ import javax.validation.Valid;
  * @author MoZhu
  * @since 2023-03-04
  */
+@SuppressWarnings("javadoc")
 @Api(tags = "用户接口")
 @RestController
 @RequestMapping("/api/user/user")
@@ -42,6 +50,12 @@ public class UserController {
 
     @Autowired
     private TokenUtil tokenUtil;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+    @Autowired
+    private IUserInfoService userInfoService;
 
     @Autowired
     private IUserService service;
@@ -57,7 +71,7 @@ public class UserController {
     @ApiOperation("登录")
     @PostMapping("/login")
     public LoginVO login(@RequestBody @Valid LoginDTO loginDTO) throws ApiException {
-        LOGGER.info(loginDTO.toString());
+//        LOGGER.info(loginDTO.toString());
         LoginVO vo = this.service.login(loginDTO);
         if (vo == null) {
             throw new ApiException(ResultCode.LOGIN_FAIL, "用户名或密码错误");
@@ -66,23 +80,64 @@ public class UserController {
     }
 
     /**
+     * @title logout
+     * @description <p> 用户登出 </p>
+     * @date 2023/4/25 1:41
+     * @author MoZhu
+     * @return {@link ApiResult<?>}
+     */
+    @ApiOperation("登出")
+    @GetMapping("/logout")
+    public ApiResult<?> logout() {
+        if (tokenUtil.destroyCurrentToken()) {
+            return ApiUtil.success("已登出");
+        }
+        throw new ApiException(ResultCode.FAIL);
+    }
+
+    /**
+     * @title detectLoginState
+     * @description <p> 检测登录状态 </p>
+     * @date 2023/4/25 1:03
+     * @author MoZhu
+     * @param token 用户token信息
+     * @return {@link ApiResult<?>}
+     */
+    @ApiOperation("检测登录状态")
+    @GetMapping("/detect")
+    public LoginVO detectLoginState(@RequestParam String token) {
+        User user = tokenUtil.getUser(new Token(token));
+        if (user == null) {
+            throw new ApiException(ResultCode.LOGIN_FAIL);
+        }
+        return userInfoService.getUserByUserId(user.getId());
+    }
+
+    /**
      * @title addUser
      * @description <p> 注册用户 </p>
      * @date 2023/3/13 23:18
      * @author MoZhu
-     * @param user 注册用户信息
+     * @param registerDTO 注册用户信息
      * @return {@link String}
      */
     @ApiOperation("注册用户")
     @PostMapping("/register")
-    public String addUser(@RequestBody @Valid User user) throws ApiException {
-        switch(this.service.addUser(user)) {
+    public String register(@RequestBody @Valid RegisterDTO registerDTO) throws ApiException {
+        // 校验验证码
+        String originVerifyCode = redisUtil.getOpsForValue().get(registerDTO.getUuid());
+        if (originVerifyCode == null || (!originVerifyCode.equalsIgnoreCase(registerDTO.getVerifyCode()))) {
+            throw new ApiException(ErrorCode.REGISTER_ERROR, "验证码错误");
+        }
+        switch(this.service.addUser(registerDTO)) {
             case 1:
-                return "添加成功";
+                // 清除redis中的验证码
+                redisUtil.getTemplate().delete(registerDTO.getUuid());
+                return "注册成功";
             case -1:
-                throw new ApiException("用户名已存在");
+                throw new ApiException(ErrorCode.REGISTER_ERROR, "用户名已存在");
             default:
-                throw new ApiException("注册失败");
+                throw new ApiException(ErrorCode.REGISTER_ERROR, "注册失败");
         }
     }
 
@@ -130,5 +185,42 @@ public class UserController {
             default:
                 throw new ApiException(ErrorCode.APP_ERROR, "修改密码：未知错误");
         }
+    }
+
+    @ApiOperation("修改用户信息")
+    @PutMapping("/modify")
+    public ApiResult<?> modifyUser(@RequestBody @Valid ModifyUserDTO dto) {
+        User user = new User();
+        BeanUtils.copyProperties(dto, user);
+        if (this.service.modify(user) == 0) {
+            throw new ApiException(ResultCode.MODIFY_FAIL);
+        }
+        return ApiUtil.success("修改成功");
+    }
+
+    /**
+     * @title sendVerifyCode
+     * @description <p> 发送邮箱验证码 </p>
+     * @date 2023/4/28 1:20
+     * @author MoZhu
+     * @param targetMail 目标邮箱
+     * @return {@link ApiResult<?>}
+     */
+    @ApiOperation("发送验证码")
+    @GetMapping("/sendVerifyCode")
+    public String sendVerifyCode(@RequestParam("targetMail") String targetMail) {
+        String verifyCode = StringUtil.generateVerifyCode();
+        MailUtil.sendMail(targetMail,
+                null,
+                null,
+                "OES在线考试平台注册验证",
+                "欢迎使用OES在线考试平台<br>您的验证码为：<span style='color: skyblue; font-size: 25px'><b>" + verifyCode + "</b></span><br>验证码邮箱10分钟内有效，请尽快使用",
+                null,
+                null);
+        // 将验证码存入redis中
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        redisUtil.getOpsForValue().set(uuid, verifyCode);
+        redisUtil.setTime(uuid, 600L);
+        return uuid;
     }
 }

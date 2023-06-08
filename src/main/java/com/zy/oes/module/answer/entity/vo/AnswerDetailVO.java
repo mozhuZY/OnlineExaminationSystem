@@ -1,6 +1,7 @@
 package com.zy.oes.module.answer.entity.vo;
 
 import com.zy.oes.module.answer.entity.SingleAnswer;
+import com.zy.oes.module.paper.entity.vo.PaperDetailVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,6 +36,9 @@ public class AnswerDetailVO implements Serializable {
 
     @ApiModelProperty("答题列表")
     private List<SingleAnswer> answers;
+
+    @ApiModelProperty("试卷")
+    private PaperDetailVO paper;
 
     @ApiModelProperty("答卷总分")
     private BigDecimal totalScore;

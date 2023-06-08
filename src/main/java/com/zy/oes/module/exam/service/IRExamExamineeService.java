@@ -1,6 +1,7 @@
 package com.zy.oes.module.exam.service;
 
 import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.exam.entity.RExamExaminee;
 import com.zy.oes.module.exam.entity.dto.EnrollPageDTO;
@@ -23,5 +24,5 @@ public interface IRExamExamineeService extends IBaseService<RExamExaminee> {
      * @param pageDTO 分页查询报名信息DTO
      * @return {@link PageInfo<EnrollVO>}
      */
-    PageInfo<EnrollVO> getEnrollPage(EnrollPageDTO pageDTO);
+    OesPage<EnrollVO> getEnrollPage(EnrollPageDTO pageDTO);
 }

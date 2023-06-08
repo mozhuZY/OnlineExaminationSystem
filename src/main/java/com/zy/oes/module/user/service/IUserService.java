@@ -6,8 +6,8 @@ import com.zy.oes.common.token.Token;
 import com.zy.oes.module.user.entity.User;
 import com.zy.oes.module.user.entity.dto.ChangePasswordDTO;
 import com.zy.oes.module.user.entity.dto.LoginDTO;
+import com.zy.oes.module.user.entity.dto.RegisterDTO;
 import com.zy.oes.module.user.entity.vo.LoginVO;
-import com.zy.oes.module.user.entity.vo.UserInfoVO;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -35,11 +35,11 @@ public interface IUserService extends IBaseService<User> {
      * @description <p> 注册用户 </p>
      * @date 2023/3/13 23:46
      * @author MoZhu
-     * @param user 注册用户信息
+     * @param registerDTO 注册用户信息
      * @return {@link int}
      */
     @Transactional(rollbackFor = {Exception.class})
-    int addUser(User user);
+    int addUser(RegisterDTO registerDTO);
 
     /**
      * @title removeUser

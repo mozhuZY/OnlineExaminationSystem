@@ -7,6 +7,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.service.impl.BaseServiceImpl;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ApiResult;
@@ -26,11 +27,14 @@ import com.zy.oes.module.answer.entity.vo.AnswerVO;
 import com.zy.oes.module.answer.mapper.AnswerMapper;
 import com.zy.oes.module.answer.service.IAnswerService;
 import com.zy.oes.module.exam.entity.Exam;
+import com.zy.oes.module.exam.entity.RExamExaminee;
 import com.zy.oes.module.exam.service.IExamService;
+import com.zy.oes.module.exam.service.IRExamExamineeService;
 import com.zy.oes.module.paper.entity.vo.PaperDetailVO;
 import com.zy.oes.module.paper.service.IPaperService;
 import com.zy.oes.module.question.entity.vo.*;
 import com.zy.oes.module.user.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +50,13 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author MoZhu
  * @since 2023-03-04
  */
+@Slf4j
 @Service
 public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> implements IAnswerService {
 
@@ -59,6 +65,9 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
 
     @Autowired
     private IExamService examService;
+
+    @Autowired
+    private IRExamExamineeService examExamineeService;
 
     @Autowired
     private IPaperService paperService;
@@ -70,7 +79,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
     private String baseFilePath;
 
     @Override
-    public PageInfo<AnswerVO> getAnswerPage(GetAnswerPageDTO dto) {
+    public OesPage<AnswerVO> getAnswerPage(GetAnswerPageDTO dto) {
         if (dto.getPageNum() < 0 || dto.getPageSize() < 0) {
             throw new ApiException(ErrorCode.PAGE_ERROR);
         }
@@ -79,30 +88,43 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
         }
         // 分页查询
         PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-        List<Answer> list = this.baseMapper.selectList(new QueryWrapper<Answer>().eq("examinee_id", dto.getUserId()));
+        List<Answer> list = this.baseMapper.selectList(new QueryWrapper<Answer>()
+                .eq("examinee_id", dto.getUserId())
+                .eq("is_del", false));
         if (list.size() == 0) {
             throw new ApiException(ResultCode.QUERY_FAIL, "无数据");
         }
         // 实体对象列表转换VO列表
-        return new PageInfo<>(BeanExpandUtil.toVOList(list, AnswerVO.class));
+        OesPage<AnswerVO> page = new OesPage<>();
+        page.setTotal(new PageInfo<>(list).getTotal());
+        page.setList(BeanExpandUtil.toVOList(list, AnswerVO.class));
+        return page;
     }
 
     @Override
     public AnswerDetailVO getAnswerDetail(GetAnswerDetailDTO dto) {
-        if (this.examService.getById(dto.getExamId()) == null) {
+        Exam exam = this.examService.getById(dto.getExamId());
+        if (exam == null) {
             throw new ApiException(ResultCode.QUERY_FAIL, "考试信息不存在");
         }
         if (this.userService.getById(dto.getUserId()) == null) {
             throw new ApiException(ResultCode.QUERY_FAIL, "考生信息不存在");
         }
-        // 查询试卷基本信息
+        // 查询答卷基本信息
         Answer answer = this.baseMapper.selectOne(new QueryWrapper<Answer>()
                 .eq("exam_id", dto.getExamId())
-                .eq("examinee_id", dto.getUserId()));
+                .eq("examinee_id", dto.getUserId())
+                .eq("is_del", false));
         AnswerDetailVO vo = new AnswerDetailVO();
         BeanUtils.copyProperties(answer, vo);
         // 获取Excel文件中的答卷内容
         vo.setAnswers(readAnswer(answer.getExamId(), answer.getContentFile()));
+        // 获取试卷信息
+        PaperDetailVO paperDetail = paperService.getPaperDetail(exam.getPaperId());
+        if (paperDetail == null) {
+            throw new ApiException(ResultCode.QUERY_FAIL, "试卷信息不存在");
+        }
+        vo.setPaper(paperDetail);
         return vo;
     }
 
@@ -114,9 +136,9 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
             throw new ApiException(ResultCode.ADD_FAIL);
         }
         // 验证考试是否过期
-//        if (exam.getEndTime().before(new Date())) {
-//            throw new ApiException(ResultCode.ADD_FAIL, "考试已结束");
-//        }
+        if (exam.getEndTime().before(new Date())) {
+            throw new ApiException(ResultCode.ADD_FAIL, "考试已结束");
+        }
         // 用户id
         Long userId = tokenUtil.getCurrentUser().getId();
         // 文件名
@@ -133,6 +155,12 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
         }
         // 答卷内容转存Excel文件
         storeAnswer(dto.getAnswers(), fileName, dto.getExamId());
+
+        // 修改考生报名考试的状态信息
+        QueryWrapper<RExamExaminee> wrapper = new QueryWrapper<RExamExaminee>().eq("exam_id", exam.getId()).eq("examinee_id", tokenUtil.getCurrentUser().getId());
+        RExamExaminee ree = examExamineeService.getOne(wrapper);
+        ree.setState(1);
+        examExamineeService.modify(ree);
         return ApiUtil.success(ResultCode.SUCCESS, "存储成功");
     }
 
@@ -160,7 +188,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
             SingleAnswer singleAnswer = answerMap.get(nos.get(i));
             if (singleAnswer != null) {
                 // 修改总分
-                totalScore += singleAnswer.getScore() - scores.get(i);
+                totalScore += scores.get(i) - singleAnswer.getScore();
                 // 修改单题分数
                 singleAnswer.setScore(scores.get(i));
             }
@@ -173,6 +201,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
         Answer newAnswer = new Answer();
         newAnswer.setId(answer.getId());
         newAnswer.setTotalScore(new BigDecimal(totalScore));
+        newAnswer.setUpdateTime(new Date());
         if (this.baseMapper.updateById(newAnswer) == 0) {
             throw new ApiException(ResultCode.MODIFY_FAIL);
         }
@@ -180,23 +209,29 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
     }
 
     /**
+     * @param paperId 试卷id
+     * @param list    答题列表
+     * @return {@link BigDecimal}
      * @title calculateTotalScore
      * @description <p> 计算答卷分数 </p>
      * @date 2023/3/23 18:09
      * @author MoZhu
-     * @param paperId 试卷id
-     * @param list 答题列表
-     * @return {@link BigDecimal}
      */
     private BigDecimal calculateTotalScore(Long paperId, List<SingleAnswer> list) {
         Double totalScore = 0.0;
         PaperDetailVO paperDetail = this.paperService.getPaperDetail(paperId);
         // 将试卷所有试题转换为map(试题id， 试题);
         Map<Long, QueVO> queMap = new HashMap<>();
-        queMap.putAll(paperDetail.getChoiceQues().stream().collect(Collectors.toMap(ChoiceQueVO::getId, que -> que)));
-        queMap.putAll(paperDetail.getBlankQues().stream().collect(Collectors.toMap(BlankQueVO::getId, que -> que)));
-        queMap.putAll(paperDetail.getJudgeQues().stream().collect(Collectors.toMap(JudgeQueVO::getId, que -> que)));
-        queMap.putAll(paperDetail.getSubQues().stream().collect(Collectors.toMap(SubQueVO::getId, que -> que)));
+        if (paperDetail.getChoiceQues() != null && paperDetail.getChoiceQues().size() > 0)
+            queMap.putAll(paperDetail.getChoiceQues().stream().collect(Collectors.toMap(ChoiceQueVO::getId, que -> que)));
+        if (paperDetail.getBlankQues() != null && paperDetail.getBlankQues().size() > 0)
+            queMap.putAll(paperDetail.getBlankQues().stream().collect(Collectors.toMap(BlankQueVO::getId, que -> que)));
+        if (paperDetail.getJudgeQues() != null && paperDetail.getJudgeQues().size() > 0)
+            queMap.putAll(paperDetail.getJudgeQues().stream().collect(Collectors.toMap(JudgeQueVO::getId, que -> que)));
+        if (paperDetail.getSubQues() != null && paperDetail.getSubQues().size() > 0)
+            queMap.putAll(paperDetail.getSubQues().stream().collect(Collectors.toMap(SubQueVO::getId, que -> que)));
+
+        System.out.println(queMap + "\n" + list);
 
         // 判断正误 + 计算总分
         for (SingleAnswer answer : list) {
@@ -210,18 +245,24 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
     }
 
     /**
+     * @param list     答题列表
+     * @param fileName 文件名
+     * @param examId   考试id
      * @title storeAnswer
      * @description <p> 答卷转存excel文件 </p>
      * @date 2023/3/21 18:33
      * @author MoZhu
-     * @param list 答题列表
-     * @param fileName 文件名
-     * @param examId 考试id
      */
     private void storeAnswer(List<SingleAnswer> list, String fileName, Long examId) {
         StringBuilder builder = new StringBuilder();
         // 组成excel文件存储路径
         builder.append(baseFilePath).append(examId);
+        // 判断路径是否存在
+        if (FileUtil.exist(builder.toString())) {
+            // 创建目录
+            FileUtil.mkdir(builder.toString());
+            log.info("创建目录 -> {}", builder);
+        }
         builder.append(File.separator).append(fileName);
 
         // 存储文件
@@ -229,28 +270,34 @@ public class AnswerServiceImpl extends BaseServiceImpl<AnswerMapper, Answer> imp
         try {
             // 创建文件
             xlsx = FileUtil.touch(builder.toString());
+            if (!FileUtil.exist(xlsx)) {
+                log.warn("文件创建失败 -> {}", xlsx.toPath());
+                throw new ApiException(ResultCode.FILE_STORE_FAIL);
+            }
             // 获取excel文件输出流
-            ExcelWriter writer = ExcelUtil.getWriter(xlsx);
+            ExcelWriter writer = ExcelUtil.getWriter();
             // 设置列别名
             writer.addHeaderAlias("no", "答题序号");
             writer.addHeaderAlias("qId", "试题id");
             writer.addHeaderAlias("content", "答题内容");
             writer.addHeaderAlias("score", "答题得分");
             // 写入数据
-            writer.write(list,true);
+            writer.write(list, true);
+            writer.flush(xlsx);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ApiException(ResultCode.FILE_STORE_FAIL);
         }
     }
 
     /**
+     * @param examId   考试id
+     * @param fileName 文件名
+     * @return {@link List<Answer>}
      * @title readAnswer
      * @description <p> 读取答题内容 </p>
      * @date 2023/3/21 18:57
      * @author MoZhu
-     * @param examId 考试id
-     * @param fileName 文件名
-     * @return {@link List<Answer>}
      */
     private List<SingleAnswer> readAnswer(Long examId, String fileName) {
         // 组成文件路径

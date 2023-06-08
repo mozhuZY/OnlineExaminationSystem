@@ -25,7 +25,4 @@ public class CancelDTO implements Serializable {
     @ApiModelProperty(value = "考试id", required = true)
     @NotNull
     private Long examId;
-
-    @ApiModelProperty("取消报名考试id")
-    private Ids ids;
 }

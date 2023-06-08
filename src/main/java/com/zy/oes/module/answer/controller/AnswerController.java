@@ -3,6 +3,7 @@ package com.zy.oes.module.answer.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.Ids;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ApiResult;
 import com.zy.oes.common.response.ResultCode;
@@ -48,7 +49,7 @@ public class AnswerController {
      */
     @ApiOperation("获取答卷详细信息")
     @GetMapping("/detail/get")
-    public AnswerDetailVO getAnswerDetail(@RequestBody @Valid GetAnswerDetailDTO dto) {
+    public AnswerDetailVO getAnswerDetail(@ModelAttribute @Valid GetAnswerDetailDTO dto) {
         return this.service.getAnswerDetail(dto);
     }
 
@@ -62,7 +63,7 @@ public class AnswerController {
      */
     @ApiOperation("分页获取答卷基础信息")
     @GetMapping("/page/get")
-    public PageInfo<AnswerVO> getAnswerPage(@RequestBody @Valid GetAnswerPageDTO pageDTO) {
+    public OesPage<AnswerVO> getAnswerPage(@ModelAttribute @Valid GetAnswerPageDTO pageDTO) {
         return this.service.getAnswerPage(pageDTO);
     }
 

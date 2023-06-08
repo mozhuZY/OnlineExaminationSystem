@@ -34,6 +34,12 @@ public class Paper extends AbstractEntity implements Serializable {
     private Long creatorId;
 
     /**
+     * 试卷标题
+     */
+    @TableField("title")
+    private String title;
+
+    /**
      * 学科
      */
     @TableField("subject")

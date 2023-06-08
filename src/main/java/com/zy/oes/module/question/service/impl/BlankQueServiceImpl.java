@@ -54,6 +54,9 @@ public class BlankQueServiceImpl extends BaseServiceImpl<BlankQueMapper, BlankQu
     @Override
     public List<BlankQueVO> getBlankQuestionListByPaperId(Long paperId) {
         List<BlankQue> list = this.baseMapper.selectBlankQueListByPaperId(paperId);
+        if (list.size() == 0) {
+            return null;
+        }
         // 获取试题分数
         List<RPaperBq> bqs = bqService.getBaseMapper().selectList(new QueryWrapper<RPaperBq>()
                 .eq("p_id", paperId)

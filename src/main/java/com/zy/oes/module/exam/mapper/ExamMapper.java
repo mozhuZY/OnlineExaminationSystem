@@ -15,5 +15,5 @@ import java.util.List;
  * @since 2023-03-04
  */
 public interface ExamMapper extends BaseMapper<Exam> {
-    List<ExamVO> selectPage();
+
 }

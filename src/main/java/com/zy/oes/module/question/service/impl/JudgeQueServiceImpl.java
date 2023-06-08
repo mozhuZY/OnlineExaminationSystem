@@ -54,6 +54,9 @@ public class JudgeQueServiceImpl extends BaseServiceImpl<JudgeQueMapper, JudgeQu
     @Override
     public List<JudgeQueVO> getJudgeQuestionListByPaperId(Long paperId) {
         List<JudgeQue> list = this.baseMapper.selectJudgeQueListByPaperId(paperId);
+        if (list.size() == 0) {
+            return null;
+        }
         // 获取试题分数
         List<RPaperJq> jqs = jqService.getBaseMapper().selectList(new QueryWrapper<RPaperJq>()
                 .eq("p_id", paperId)

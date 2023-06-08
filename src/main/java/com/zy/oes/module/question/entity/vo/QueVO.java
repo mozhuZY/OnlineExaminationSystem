@@ -40,4 +40,10 @@ public class QueVO implements Serializable {
 
     @ApiModelProperty("试题标签")
     private List<String> tags;
+
+    @ApiModelProperty("试题序号")
+    private Integer qNo;
+
+    @ApiModelProperty("试题状态")
+    private Integer state;
 }

@@ -55,4 +55,10 @@ public class ChoiceQue extends AbstractEntity implements Serializable {
      */
     @TableField("opts")
     private String opts;
+
+    /**
+     * 试题状态
+     */
+    @TableField("state")
+    private Integer state;
 }

@@ -54,6 +54,9 @@ public class SubQueServiceImpl extends BaseServiceImpl<SubQueMapper, SubQue> imp
     @Override
     public List<SubQueVO> getSubQuestionListByPaperId(Long paperId) {
         List<SubQue> list = this.baseMapper.selectSubQueListByPaperId(paperId);
+        if (list.size() == 0) {
+            return null;
+        }
         // 获取试题分数
         List<RPaperSq> sqs = sqService.getBaseMapper().selectList(new QueryWrapper<RPaperSq>()
                 .eq("p_id", paperId)

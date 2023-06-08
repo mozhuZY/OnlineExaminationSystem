@@ -1,9 +1,11 @@
 package com.zy.oes.module.question.service;
 
 import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.question.entity.ChoiceQue;
+import com.zy.oes.module.question.entity.dto.GetChoiceQuestionConditionDTO;
 import com.zy.oes.module.question.entity.vo.ChoiceQueVO;
 
 import java.util.List;
@@ -26,7 +28,27 @@ public interface IChoiceQueService extends IBaseService<ChoiceQue> {
      * @param pageDTO 分页信息
      * @return {@link PageInfo<ChoiceQueVO>}
      */
-    PageInfo<ChoiceQueVO> getChoiceQuestionPage(PageDTO pageDTO);
+    OesPage<ChoiceQueVO> getChoiceQuestionPage(PageDTO pageDTO);
+
+    /**
+     * @title getCurrentUserChoiceQuestionPage
+     * @description <p> 获取当前用户的选择题信息 </p>
+     * @date 2023/5/2 17:16
+     * @author MoZhu
+     * @param pageDTO 分页信息
+     * @return {@link PageInfo<ChoiceQueVO>}
+     */
+    OesPage<ChoiceQueVO> getCurrentUserChoiceQuestionPage(PageDTO pageDTO);
+
+    /**
+     * @title getCurrentUserChoiceQuestionPage
+     * @description <p> 条件筛选获取选择题信息 </p>
+     * @date 2023/5/2 17:16
+     * @author MoZhu
+     * @param pageDTO 分页信息
+     * @return {@link PageInfo<ChoiceQueVO>}
+     */
+    OesPage<ChoiceQueVO> getChoiceQuestionPageByCondition(GetChoiceQuestionConditionDTO pageDTO);
 
     /**
      * @title getChoiceQuestionListByPageId

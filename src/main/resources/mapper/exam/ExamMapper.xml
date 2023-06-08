@@ -4,9 +4,4 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zy.oes.module.exam.mapper.ExamMapper">
 
-    <select id="selectPage" resultType="com.zy.oes.module.exam.entity.vo.ExamVO">
-        select id, paper_id, creator_id, ui.real_name as creator_name  exam_name, category, subject, released_time, start_time, end_time state
-        from exam left join user u on u.id = exam.creator_id left join user_info ui on u.id = ui.real_name
-        where is_del = 0
-    </select>
 </mapper>

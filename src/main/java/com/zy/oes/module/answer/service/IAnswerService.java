@@ -1,6 +1,7 @@
 package com.zy.oes.module.answer.service;
 
 import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.common.response.ApiResult;
 import com.zy.oes.module.answer.entity.Answer;
@@ -33,7 +34,7 @@ public interface IAnswerService extends IBaseService<Answer> {
      * @param dto
      * @return {@link PageInfo<AnswerVO>}
      */
-    PageInfo<AnswerVO> getAnswerPage(GetAnswerPageDTO dto);
+    OesPage<AnswerVO> getAnswerPage(GetAnswerPageDTO dto);
 
     /**
      * @title getAnswerDetail

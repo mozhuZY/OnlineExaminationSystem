@@ -29,6 +29,14 @@ public class LoginVerificationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
+        if ("OPTIONS".equals(request.getMethod())) {
+            // 返回允许跨域信息
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Headers","*");
+            response.setHeader("Access-Control-Allow-Methods","*");
+            response.setHeader("Access-Control-Allow-Credentials","true");
+            response.setHeader("Access-Control-Max-Age","3600");
+        }
         String token = request.getHeader(Token.HEADER);
         // 拦截请求：未携带token
         if (token == null) {

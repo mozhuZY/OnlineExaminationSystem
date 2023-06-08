@@ -108,4 +108,28 @@ public class TokenUtil {
     public User getCurrentUser() {
         return getUser(getCurrentToken());
     }
+
+    /**
+     * @title destroyToken
+     * @description <p> 销毁指定token </p>
+     * @date 2023/4/25 1:37
+     * @author MoZhu
+     * @param token 指定的token
+     * @return {@link boolean}
+     */
+    public boolean destroyToken(Token token) {
+        return template.delete(token.getToken());
+    }
+
+    /**
+     * @title destroyCurrentToken
+     * @description <p> 销毁当前token </p>
+     * @date 2023/4/25 1:40
+     * @author MoZhu
+     * @param
+     * @return {@link boolean}
+     */
+    public boolean destroyCurrentToken() {
+        return template.delete(getCurrentToken().getToken());
+    }
 }

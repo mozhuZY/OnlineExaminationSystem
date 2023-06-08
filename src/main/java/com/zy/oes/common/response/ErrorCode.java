@@ -16,7 +16,8 @@ public enum ErrorCode implements StatusCode{
     AUTHENTICATION_ERROR(2001, "认证异常"),
     PAGE_ERROR(2002, "分页信息异常"),
     // 2100 - 2199 -> 用户模块异常
-    LOGIN_ERROR(2100, "登录异常");
+    LOGIN_ERROR(2100, "登录异常"),
+    REGISTER_ERROR(2100, "注册异常");
     // 2200 - 2299 -> 考试模块异常
     // 2300 - 2399 -> 试卷模块异常
     // 2400 - 2499 -> 试题模块异常

@@ -22,6 +22,9 @@ import java.math.BigDecimal;
 public class PaperDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty("试卷标题")
+    private String title;
+
     @ApiModelProperty("学科")
     private String subject;
 

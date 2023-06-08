@@ -53,4 +53,12 @@ public class User extends AbstractEntity implements Serializable {
     @NotNull
     @TableField("email")
     private String email;
+
+    /**
+     * 状态
+     */
+    @ApiModelProperty("状态")
+    @NotNull
+    @TableField("state")
+    private Integer state;
 }

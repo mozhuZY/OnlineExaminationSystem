@@ -42,4 +42,10 @@ public class LoginVO implements Serializable {
 
     @ApiModelProperty("用户所属组织")
     private String org;
+
+    @ApiModelProperty("用户头像")
+    private String picture;
+
+    @ApiModelProperty("用户角色")
+    private Long role;
 }

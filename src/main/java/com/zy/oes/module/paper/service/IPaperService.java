@@ -1,6 +1,7 @@
 package com.zy.oes.module.paper.service;
 
 import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.common.response.ApiResult;
@@ -40,6 +41,16 @@ public interface IPaperService extends IBaseService<Paper> {
      * @return {@link PageInfo<PaperInfoVO>}
      */
     PageInfo<PaperInfoVO> getPaperPage(PageDTO pageDTO);
+
+    /**
+     * @title getPaperPage
+     * @description <p> 查询当前用户试卷分页信息 </p>
+     * @date 2023/3/19 19:32
+     * @author MoZhu
+     * @param pageDTO 分页信息
+     * @return {@link PageInfo<PaperInfoVO>}
+     */
+    OesPage<PaperInfoVO> getCurrentUserPaperPage(PageDTO pageDTO);
 
     /**
      * @title insertQuestion

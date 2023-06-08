@@ -48,4 +48,8 @@ public class UserInfo extends AbstractEntity implements Serializable {
     @ApiModelProperty(value = "所属组织")
     @TableField("org")
     private String org;
+
+    @ApiModelProperty(value = "用户头像id")
+    @TableField("picture_id")
+    private Long pictureId;
 }

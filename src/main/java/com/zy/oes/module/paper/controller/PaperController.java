@@ -3,6 +3,7 @@ package com.zy.oes.module.paper.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.zy.oes.common.base.entity.Ids;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.entity.dto.PageDTO;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ApiResult;
@@ -70,6 +71,20 @@ public class PaperController {
     }
 
     /**
+     * @title getCurrentUserPaperPage
+     * @description <p> 分页查询当前用户的试卷信息 </p>
+     * @date 2023/3/19 19:35
+     * @author MoZhu
+     * @param pageDTO 分页信息
+     * @return {@link PageInfo<PaperInfoVO>}
+     */
+    @ApiOperation("分页查询当前用户的试卷信息")
+    @GetMapping("/user/page/get")
+    public OesPage<PaperInfoVO> getCurrentUserPaperPage(@ModelAttribute @Valid PageDTO pageDTO) {
+        return this.service.getCurrentUserPaperPage(pageDTO);
+    }
+
+    /**
      * @title addPaper
      * @description <p> 新增试卷 </p>
      * @date 2023/3/19 13:01
@@ -113,7 +128,7 @@ public class PaperController {
      * @return {@link ApiResult<Object>}
      */
     @ApiOperation("删除试卷")
-    @DeleteMapping("/remove")
+    @PostMapping("/remove")
     public ApiResult<Object> removePaper(@RequestBody @Valid Ids ids) {
         if (this.service.remove(ids) == 0) {
             throw new ApiException(ResultCode.REMOVE_FAIL);
@@ -130,7 +145,7 @@ public class PaperController {
      * @return {@link ApiResult<Object>}
      */
     @ApiOperation("删除试卷试题")
-    @DeleteMapping("/question/remove")
+    @PostMapping("/question/remove")
     public ApiResult<Object> removePaperQuestion(@RequestBody @Valid RemovePaperQuestionDTO dto) {
         return this.service.removePaperQuestion(dto);
     }
@@ -154,9 +169,17 @@ public class PaperController {
         return ApiUtil.success(ResultCode.MODIFY_SUCCESS);
     }
 
+    /**
+     * @title modifyPaperInfo
+     * @description <p> 修改试卷试题信息 </p>
+     * @date 2023/3/25 15:47
+     * @author MoZhu
+     * @param dto 修改试卷试题DTO
+     * @return {@link ApiResult<Object>}
+     */
     @ApiOperation("修改试卷试题信息")
     @PutMapping("/question/modify")
-    public ApiResult<Object> modifyPaperInfo(@RequestBody @Valid ModifyPaperQuestionDTO dto) {
+    public ApiResult<Object> modifyPaperQuestionInfo(@RequestBody @Valid ModifyPaperQuestionDTO dto) {
         return this.service.modifyPaperQuestion(dto);
     }
 }

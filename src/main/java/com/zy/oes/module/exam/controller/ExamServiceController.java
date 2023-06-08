@@ -1,6 +1,9 @@
 package com.zy.oes.module.exam.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.Ids;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ApiResult;
 import com.zy.oes.common.response.ResultCode;
@@ -40,7 +43,7 @@ public class ExamServiceController {
     private IExamService examService;
 
     @Autowired
-    private IRExamExamineeService examExamineeService;
+    private IRExamExamineeService service;
 
     @Autowired
     private TokenUtil tokenUtil;
@@ -55,8 +58,8 @@ public class ExamServiceController {
      */
     @ApiOperation("分页查询考试报名信息")
     @GetMapping("/enroll/page/get")
-    public PageInfo<EnrollVO> getEnrollPage(@ModelAttribute @Valid EnrollPageDTO dto) {
-        return this.examExamineeService.getEnrollPage(dto);
+    public OesPage<EnrollVO> getEnrollPage(@ModelAttribute @Valid EnrollPageDTO dto) {
+        return this.service.getEnrollPage(dto);
     }
 
     /**
@@ -74,13 +77,15 @@ public class ExamServiceController {
         if (exam == null) {
             throw new ApiException(ResultCode.ENROLL_FAIL, "此考试不存在");
         }
-        if (new Date().before((exam).getStartTime())) {
+        Date now = new Date();
+        if (now.after(exam.getStartTime())) {
             throw new ApiException(ResultCode.ENROLL_FAIL, "考试已截止报名");
         }
         RExamExaminee rExamExaminee = new RExamExaminee();
         BeanUtils.copyProperties(dto, rExamExaminee);
         rExamExaminee.setExamineeId(tokenUtil.getCurrentUser().getId());
-        if (this.examExamineeService.add(rExamExaminee) == 0) {
+        rExamExaminee.setState(0);
+        if (this.service.add(rExamExaminee) == 0) {
             throw new ApiException(ResultCode.ADD_FAIL, "报名失败");
         }
         return ApiUtil.success("报名成功");
@@ -101,9 +106,29 @@ public class ExamServiceController {
         if (exam == null) {
             throw new ApiException(ResultCode.ENROLL_FAIL, "此考试不存在");
         }
-        if (this.examExamineeService.remove(dto.getIds()) == 0) {
+        if (this.service.remove(new Ids(exam.getId())) == 0) {
             throw new ApiException(ResultCode.FAIL, "取消失败");
         }
         return ApiUtil.success("报名已取消");
+    }
+
+    /**
+     * @title detectEnroll
+     * @description <p> 通过考试id获取当前用户报名信息 </p>
+     * @date 2023/5/5 16:25
+     * @author MoZhu
+     * @param
+     * @return {@link ApiResult}
+     */
+    @ApiOperation("通过考试id获取当前用户报名信息")
+    @GetMapping("/detect")
+    public RExamExaminee detectEnroll(@RequestParam("examId") Long examId) {
+        Long userId = tokenUtil.getCurrentUser().getId();
+        RExamExaminee ree = this.service.getOne(new QueryWrapper<RExamExaminee>().eq("exam_id", examId).eq("examinee_id", userId));
+        if (ree == null) {
+            throw new ApiException(ResultCode.QUERY_FAIL, "未报名本场考试");
+        }
+
+        return ree;
     }
 }

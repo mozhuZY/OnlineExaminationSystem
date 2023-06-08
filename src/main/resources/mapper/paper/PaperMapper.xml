@@ -41,9 +41,6 @@
             r_paper_sq
         </if>
         <set>
-            <if test="dto.qNo != null and dto.qNo != ''">
-                q_no = #{dto.qNo},
-            </if>
             <if test="dto.score != null and dto.score != ''">
                 score = #{dto.score}
             </if>

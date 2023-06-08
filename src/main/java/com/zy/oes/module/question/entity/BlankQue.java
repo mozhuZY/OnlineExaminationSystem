@@ -55,4 +55,10 @@ public class BlankQue extends AbstractEntity implements Serializable {
      */
     @TableField("spaces")
     private String spaces;
+
+    /**
+     * 试题状态
+     */
+    @TableField("state")
+    private Integer state;
 }

@@ -1,15 +1,20 @@
 package com.zy.oes.module.user.controller;
 
 
+import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.exception.ApiException;
 import com.zy.oes.common.response.ResultCode;
 import com.zy.oes.module.user.entity.User;
 import com.zy.oes.module.user.entity.UserInfo;
+import com.zy.oes.module.user.entity.dto.GetUserInfoVOPageDTO;
 import com.zy.oes.module.user.entity.dto.ModifyUserInfoDTO;
+import com.zy.oes.module.user.entity.vo.LoginVO;
 import com.zy.oes.module.user.entity.vo.UserInfoVO;
 import com.zy.oes.module.user.service.IUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.experimental.Accessors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -61,11 +66,25 @@ public class UserInfoController {
      */
     @ApiOperation("根据用户id查询用户详细信息")
     @GetMapping("/get")
-    public UserInfoVO getUserByUserId(@RequestParam("userId") Long userId) throws ApiException {
-        UserInfoVO vo = this.service.getUserByUserId(userId);
+    public LoginVO getUserByUserId(@RequestParam("userId") Long userId) throws ApiException {
+        LoginVO vo = this.service.getUserByUserId(userId);
         if (vo == null) {
             throw new ApiException(ResultCode.QUERY_FAIL, "查询用户不存在");
         }
         return vo;
+    }
+
+    /**
+     * @title getUserInfoVOPage
+     * @description <p> 条件分页查询用户信息 </p>
+     * @date 2023/5/5 19:20
+     * @author MoZhu
+     * @param dto 条件
+     * @return {@link PageInfo<UserInfoVO>}
+     */
+    @ApiOperation("条件分页查询用户信息")
+    @PostMapping("/page/get")
+    public OesPage<UserInfoVO> getUserInfoVOPage(@RequestBody @Valid GetUserInfoVOPageDTO dto) {
+        return this.service.getUserInfoVOPage(dto);
     }
 }

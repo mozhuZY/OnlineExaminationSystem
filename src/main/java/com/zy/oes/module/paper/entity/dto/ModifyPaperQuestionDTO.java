@@ -33,9 +33,9 @@ public class ModifyPaperQuestionDTO implements Serializable {
     @NotNull
     private Integer type;
 
-    @ApiModelProperty(value = "试题序号")
-    private Integer qNo;
+//    @ApiModelProperty(value = "试题序号")
+//    private Integer qNo;
 
     @ApiModelProperty(value = "试题分数")
-    private Integer score;
+    private Double score;
 }

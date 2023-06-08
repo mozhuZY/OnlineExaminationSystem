@@ -1,5 +1,6 @@
 package com.zy.oes.module.exam.entity.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -55,18 +57,27 @@ public class ExamVO implements Serializable {
     @ApiModelProperty(value = "发布时间", required = true)
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date releasedTime;
 
     @ApiModelProperty(value = "开始时间", required = true)
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     @ApiModelProperty(value = "结束时间", required = true)
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
+
+    @ApiModelProperty(value = "考试图片")
+    private String picture;
+
+    @ApiModelProperty(value = "考试状态")
+    private Integer state;
+
+    @ApiModelProperty(value = "试卷分数")
+    private BigDecimal totalScore;
 }

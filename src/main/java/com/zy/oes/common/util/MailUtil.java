@@ -1,4 +1,5 @@
 package com.zy.oes.common.util;
+import com.sun.mail.util.MailSSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +21,8 @@ import java.util.Properties;
  */
 public class MailUtil {
     private static final Logger log = LoggerFactory.getLogger(MailUtil.class);
-    private final static String SenderEmail = "tpai18522947960@163.com";//开启授权码的邮箱
-    private final static String senderCode = "OAYMRZLWIYSWUYZD";//授权码
+    private final static String SenderEmail = "zhouying_mozhu@163.com";//开启授权码的邮箱
+    private final static String senderCode = "DKXNIOPKKCHKXSYQ";//授权码
     public static final String emailSMTPHost = "smtp.163.com";//服务器地址
 
 
@@ -46,12 +47,19 @@ public class MailUtil {
             props.setProperty("mail.smtp.auth", "true");// 需要请求认证;
             props.setProperty("mail.smtp.timeout", "60000");
             props.setProperty("mail.smtp.ssl.enable", "true");
+            // 以下为解决 javax.mail.MessagingException: Could not connect to SMTP host: smtp.163.com, port: 465; 异常的方案
+            // 使用TLSv1.2版本协议
+            MailSSLSocketFactory sf = new MailSSLSocketFactory("TLSv1.2");
+            // 设置信任所有主机
+            sf.setTrustAllHosts(true);
+            props.put("mail.smtp.ssl.socketFactory", sf);
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
             Session session = Session.getInstance(props);//得到会话对象实例
             session.setDebug(true);//是否打印详细日志
             MimeMessage message = createMimeMessage(session, receiveMailAccount, ccMailAccounts, bccMailAccount, subject, content, filePath, fileName);//获取邮件对象（封装了一个方法）
             Transport transport = session.getTransport();
-            transport.connect(emailSMTPHost, "xxxx", senderCode);//连接发送人的邮箱账户
+            transport.connect(emailSMTPHost, SenderEmail, senderCode);//连接发送人的邮箱账户
             // 6. 发送邮件, 发到所有的收件地址, message.getAllRecipients() 获取到的是在创建邮件对象时添加的所有收件人, 抄送人, 密送人
             transport.sendMessage(message, message.getAllRecipients());
             // 7. 关闭连接
@@ -59,6 +67,7 @@ public class MailUtil {
 
             log.info("邮件发送成功");
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("发送邮件失败");
         }
     }
@@ -87,22 +96,24 @@ public class MailUtil {
         // 3. 设置收件人、抄送人、密送人
         //MimeMessage.RecipientType.TO：收件类型；MimeMessage.RecipientType.CC：抄送类型；MimeMessage.RecipientType.BCC：密送类型
         message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMailAccount, "收件人", "UTF-8"));
-        message.setRecipient(MimeMessage.RecipientType.CC, new InternetAddress(getAddress(ccMailAccounts), "抄送人", "UTF-8"));
-        message.setRecipient(MimeMessage.RecipientType.BCC, new InternetAddress(bccMailAccount, "密送人", "UTF-8"));
+//        message.setRecipient(MimeMessage.RecipientType.CC, new InternetAddress(getAddress(ccMailAccounts), "抄送人", "UTF-8"));
+//        message.setRecipient(MimeMessage.RecipientType.BCC, new InternetAddress(bccMailAccount, "密送人", "UTF-8"));
         // 4. Subject: 邮件主题
         message.setSubject(subject, "UTF-8");
         // 5. Content: 邮件正文（可以使用html标签）
         message.setContent(content, "text/html;charset=UTF-8");
 
-        MimeMultipart multipart = new MimeMultipart();
-        MimeBodyPart file = new MimeBodyPart();
-        DataHandler handler = new DataHandler(new FileDataSource(filePath));
-        file.setDataHandler(handler);
-        //对文件名进行编码，防止出现乱码
-        String document = MimeUtility.encodeWord(fileName, "utf-8", "B");
-        file.setFileName(document);
-        multipart.addBodyPart(file);
-        message.setContent(multipart);
+        if (filePath != null) {
+            MimeMultipart multipart = new MimeMultipart();
+            MimeBodyPart file = new MimeBodyPart();
+            DataHandler handler = new DataHandler(new FileDataSource(filePath));
+            file.setDataHandler(handler);
+            //对文件名进行编码，防止出现乱码
+            String document = MimeUtility.encodeWord(fileName, "utf-8", "B");
+            file.setFileName(document);
+            multipart.addBodyPart(file);
+            message.setContent(multipart);
+        }
         // 6. 设置发件时间
         message.setSentDate(new Date());
         // 7. 保存设置
@@ -112,6 +123,9 @@ public class MailUtil {
 
     //邮箱地址转换
     private static String getAddress(List<String> mailList) throws AddressException {
+        if (mailList == null) {
+            return null;
+        }
         Address[] address = new InternetAddress[mailList.size()];
         for (int i = 0; i < mailList.size(); i++) {
             address[i] = new InternetAddress(mailList.get(i));

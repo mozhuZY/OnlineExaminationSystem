@@ -1,8 +1,12 @@
 package com.zy.oes.module.user.service;
 
+import com.github.pagehelper.PageInfo;
+import com.zy.oes.common.base.entity.OesPage;
 import com.zy.oes.common.base.service.IBaseService;
 import com.zy.oes.module.user.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zy.oes.module.user.entity.dto.GetUserInfoVOPageDTO;
+import com.zy.oes.module.user.entity.vo.LoginVO;
 import com.zy.oes.module.user.entity.vo.UserInfoVO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +26,9 @@ public interface IUserInfoService extends IBaseService<UserInfo> {
      * @date 2023/3/14 1:32
      * @author MoZhu
      * @param userId 用户id
-     * @return {@link com.zy.oes.module.user.entity.User}
+     * @return {@link com.zy.oes.module.user.entity.vo.LoginVO}
      */
-    UserInfoVO getUserByUserId(Long userId);
+    LoginVO getUserByUserId(Long userId);
 
     /**
      * @title modifyUserInfo
@@ -36,4 +40,14 @@ public interface IUserInfoService extends IBaseService<UserInfo> {
      */
     @Transactional
     int modifyUserInfo(UserInfo userInfo);
+
+    /**
+     * @title getUserInfoVOPage
+     * @description <p> 条件查询用户 </p>
+     * @date 2023/5/5 18:58
+     * @author MoZhu
+     * @param pageDTO 分页信息
+     * @return {@link PageInfo<UserInfoVO>}
+     */
+    OesPage<UserInfoVO> getUserInfoVOPage(GetUserInfoVOPageDTO pageDTO);
 }

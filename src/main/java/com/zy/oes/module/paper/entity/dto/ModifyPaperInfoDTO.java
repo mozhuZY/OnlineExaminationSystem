@@ -25,6 +25,9 @@ public class ModifyPaperInfoDTO {
     @NotNull
     private Long id;
 
+    @ApiModelProperty("试卷标题")
+    private String title;
+
     @ApiModelProperty("学科")
     private String subject;
 

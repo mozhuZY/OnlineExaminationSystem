@@ -44,21 +44,15 @@ public class ExamDTO implements Serializable {
     @NotNull
     private String subject;
 
-    @ApiModelProperty(value = "发布时间", required = true)
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date releasedTime;
-
     @ApiModelProperty(value = "开始时间", required = true)
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     @ApiModelProperty(value = "结束时间", required = true)
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 }

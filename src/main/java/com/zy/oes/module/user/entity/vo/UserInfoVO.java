@@ -25,7 +25,7 @@ public class UserInfoVO implements Serializable {
     @ApiModelProperty("用户id")
     private Long userId;
 
-    @ApiModelProperty("用户id")
+    @ApiModelProperty("用户邮箱")
     private String email;
 
     @ApiModelProperty("用户姓名")
@@ -39,6 +39,9 @@ public class UserInfoVO implements Serializable {
 
     @ApiModelProperty("用户所属组织")
     private String org;
+
+    @ApiModelProperty("用户头像")
+    private String picture;
 
     public UserInfoVO(User user, UserInfo userInfo) {
         this.userId = user.getId();

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -21,11 +22,11 @@ import java.util.Date;
 public class EnrollVO implements Serializable {
 
     @ApiModelProperty("考试信息")
-    private ExamVO exam;
+    private StudentExamVO exam;
 
     @ApiModelProperty("报名时间")
     private Date enrollTime;
 
     @ApiModelProperty("报名状态")
-    private String state;
+    private Integer state;
 }

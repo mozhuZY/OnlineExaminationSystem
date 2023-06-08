@@ -49,4 +49,10 @@ public class JudgeQue extends AbstractEntity implements Serializable {
      */
     @TableField("tags")
     private String tags;
+
+    /**
+     * 试题状态
+     */
+    @TableField("state")
+    private Integer state;
 }
